@@ -1,0 +1,58 @@
+{
+  "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was actually observed — absent means not yet verified, not empty.",
+  "endpoint": "https://mcp.backstroke.com/mcp",
+  "verifiedAgainst": "prod, 2026-08-11",
+  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch"],
+  "tools": {
+    "predict_subject_lines": {
+      "required": [],
+      "params": ["email_html", "email_text", "rendered_image_url", "controls", "brand_context", "campaign_id", "klaviyo_campaign_id"]
+    },
+    "predict_subject_lines_for_my_audience": {
+      "required": ["segment_id"],
+      "params": ["segment_id", "email_html", "email_text", "rendered_image_url", "controls", "brand_context", "campaign_id", "klaviyo_campaign_id"]
+    },
+    "score_hero_generic": {
+      "required": ["image_urls"],
+      "params": ["image_urls", "include_breakdown"]
+    },
+    "score_hero_for_my_audience": {
+      "required": ["image_urls"],
+      "params": ["image_urls", "include_breakdown"]
+    },
+    "get_hero_scores": {
+      "required": ["run_id"],
+      "params": ["run_id"]
+    },
+    "list_cohorts": {
+      "required": [],
+      "params": [],
+      "outputFields": ["id", "name", "description", "targetable", "klaviyo_segment_id"]
+    },
+    "list_klaviyo_campaigns": {
+      "required": [],
+      "params": ["limit"],
+      "outputFields": ["id", "klaviyo_campaign_id", "name", "status", "send_time", "created_at", "updated_at"]
+    },
+    "read_campaign_content": {
+      "required": ["campaign_id"],
+      "params": ["campaign_id", "format"],
+      "outputFields": ["klaviyo_campaign_id", "klaviyo_message_id", "name", "status", "send_time", "scheduled_at", "included_audiences", "excluded_audiences", "editor_type", "subject", "preview_text", "images", "links", "body_text", "body_text_truncated", "content_provenance"]
+    },
+    "push_subject_lines_to_klaviyo": {
+      "required": [],
+      "params": ["campaign_id", "selections", "klaviyo_campaign_id", "subject", "preheader"]
+    },
+    "list_accounts": {
+      "required": [],
+      "params": [],
+      "outputFields": ["name", "active"]
+    },
+    "switch_account": {
+      "required": ["account"],
+      "params": ["account"]
+    }
+  },
+  "retiredNames": {},
+  "retiredFields": {}
+}

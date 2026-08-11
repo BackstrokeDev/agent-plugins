@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "backstroke": {
+      "type": "http",
+      "url": "https://mcp.backstroke.com/mcp"
+    }
+  }
+}
