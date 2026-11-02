@@ -22,10 +22,10 @@ skill uses. Inlined so the skill runs without guessing.
   re-sort it. `top_cohort` is a demographic panel — e.g. "male / 45-60 / east /
   medium" — the one cohort that image wins by the most (may be null). It is a model
   descriptor, not a Klaviyo segment.
-- **`share`** follows `share_basis`: `"audience"` = the part of the audience in the
-  cohorts it wins; `"cohorts"` = `win_count / cohort_count`. Null → omit it.
-- **`best`** = highest average score across all cohorts; the pick if you send one
-  image to everyone. Can differ from the first winner; can be null.
+- **`share`** = `win_count / cohort_count`: `score_hero_generic` always returns
+  `share_basis: "cohorts"`. Null → omit it.
+- **`best`** = the winner with the highest average score across all cohorts; the
+  pick if you send one image to everyone. Can differ from the first winner; can be null.
 - **`images[]`** — one entry per submitted image. `refused` entries carry `code` +
   `message` (tell the user; retry once only if `retryable`). Animated GIFs are
   refused (`animated_not_ranked`). A `scored` image that won nothing has `behind`

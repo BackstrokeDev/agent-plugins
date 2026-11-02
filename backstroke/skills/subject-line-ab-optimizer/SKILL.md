@@ -143,7 +143,8 @@ the user has reviewed and approved the exact lines.*
    them in Klaviyo."
 
 ## Hand-offs
-- Rank the campaign's **hero images** (not subject lines) → `hero-winner-picker`:
+- Pick the campaign's winning **hero images** (not subject lines) →
+  `hero-winner-picker`:
   pass `read_campaign_content`'s `images[].src` (filtered to real heroes) to the scorer.
 - Route the winning lines through the customer's **own** Klaviyo MCP instead of
   Backstroke's push → supported: hand their connector the `klaviyo_campaign_id`

@@ -53,10 +53,11 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 
 1. **Get candidate images.** Either the user supplies 1–50 **public** image URLs,
    or they have image **files** (not links) → call `request_image_upload` (no
-   input), upload each file with the `curl_command` it returns (one curl per file) —
-   or, if you can't run code, give the user the `upload_url` and wait for them to say
-   they're done — then pass its `upload_id` to the scorer. (`image_urls` and
-   `upload_id` can be combined, 50 images in all; the link closes soon after it's made.)
+   input), upload each file with the `curl_command` it returns (one curl per file,
+   one at a time, in the order the user added them) — or, if you can't run code,
+   give the user the `upload_url` and wait for them to say they're done — then pass
+   its `upload_id` to the scorer. (`image_urls` and `upload_id` can be combined, 50
+   images in all; the link closes soon after it's made.)
    Or they name a Klaviyo campaign → call `read_campaign_content(campaign_id,
    "lean")` (get the id from `list_klaviyo_campaigns` first) and take `images[].src`.
    - **Filter to real hero candidates first.** `images[]` also contains the brand
@@ -90,9 +91,9 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
      `"audience"` → the % of the audience in the cohorts it wins; `"cohorts"` → just
      the fraction of cohorts it wins (no audience sizes were available). `share` can
      be null — then leave it out.
-   - **Best overall** — `best` is the highest average score across all cohorts: the
-     pick if they send **one** image to everyone. It can differ from the first winner;
-     say so when it does. `best` can be null.
+   - **Best overall** — `best` is the winner with the highest average score across
+     all cohorts: the pick if they send **one** image to everyone. It can differ from
+     the first winner; say so when it does. `best` can be null.
    - **Images that won nothing** have **no order** — never rank them. A scored image
      with `behind` set: if `close`, say "its best audience prefers *(that image)*";
      otherwise "no audience picked this image over the others". Never quote

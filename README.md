@@ -108,7 +108,7 @@ we ship against (prod)**, call `tools/list`, observe real responses, and update
 > **re-read the traps/ergonomics for stale assertions**.
 
 ## Status
-v0.1 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
+v0.2 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
 claude.ai and other MCP clients can add the tools as a custom connector. Connects to
 the production Backstroke MCP (`mcp.backstroke.com/mcp`) over native HTTP with OAuth —
 no bridge, no keys (the server supports dynamic client registration). Just needs a

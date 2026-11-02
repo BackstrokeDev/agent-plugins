@@ -38,8 +38,8 @@ skill chains. Inlined so the skill runs without guessing.
 - **`share`** — by `share_basis`: `"audience"` = the part of the audience in the
   cohorts it wins; `"cohorts"` = `win_count / cohort_count`. Null when no cohort it
   wins has a subscriber count; then omit it.
-- **`best`** — highest average score across all cohorts; the pick if you send one
-  image to everyone. Can differ from the first winner; can be null.
+- **`best`** — the winner with the highest average score across all cohorts; the
+  pick if you send one image to everyone. Can differ from the first winner; can be null.
 - **`images[]`** — one entry per submitted image, in input order. `refused` entries
   carry `code` + `message` (tell the user; retry once only if `retryable`). Animated
   GIFs are refused (`animated_not_ranked`). A `scored` image that won nothing has
@@ -69,11 +69,12 @@ skill chains. Inlined so the skill runs without guessing.
 - **Output:** `{ upload_id, upload_url, curl_command, max_files, max_bytes, expires_at }`.
   `upload_url` carries a secret — share it only with the user.
 - **Flow:** if you can run code, upload each file with `curl_command` (one curl per
-  file; each prints a result for its file — tell the user about any file that came
-  back with a message). If a curl fails, or you can't run code, give the user
-  `upload_url` and wait until they say they're done. Then pass `upload_id` to the
-  scorer. The link holds up to `max_files` images, each up to `max_bytes`, and closes
-  at `expires_at`. Don't use it for images that already have a public link.
+  file, one at a time, in the order the user added them; each prints a result for
+  its file — tell the user about any file that came back with a message). If a curl
+  fails, or you can't run code, give the user `upload_url` and wait until they say
+  they're done. Then pass `upload_id` to the scorer. The link holds up to
+  `max_files` images, each up to `max_bytes`, and closes at `expires_at`. Don't use it
+  for images that already have a public link.
 
 ## The async contract (all hero tools)
 ```

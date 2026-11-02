@@ -45,8 +45,9 @@ value in one tool call.
    If they gave a page/asset rather than direct URLs, resolve to direct image
    URLs first. (Max 50; all must be publicly reachable.) If they have image
    **files** instead, call `request_image_upload` (no input), upload each file with
-   the returned `curl_command` (one curl per file) — or, if you can't run code, give
-   the user the `upload_url` and wait for them to say they're done — then pass the
+   the returned `curl_command` (one curl per file, one at a time, in the order the
+   user added them) — or, if you can't run code, give the user the `upload_url` and
+   wait for them to say they're done — then pass the
    `upload_id` in step 2. (`image_urls` and `upload_id` can be combined, 50 in all.)
 
 2. **Score.** Call `score_hero_generic` with `image_urls: [...]` and/or `upload_id`.
@@ -61,12 +62,13 @@ value in one tool call.
    `refused` one with its `message` (retry once only if `retryable` is true; animated
    GIFs are refused with `animated_not_ranked`). Then:
    - **Winners** — `winners[]` is already ordered, most cohorts won first. Give each
-     one's `win_count` of `cohort_count` cohorts, its `share` (by `share_basis`:
-     `"audience"` = % of the audience in the cohorts it wins; `"cohorts"` = fraction
-     of cohorts won; omit a null `share`) and `top_cohort`, the demographic it wins
+     one's `win_count` of `cohort_count` cohorts, its `share` (the fraction of
+     cohorts it wins: `score_hero_generic` always returns `share_basis: "cohorts"`;
+     omit a null `share`) and `top_cohort`, the demographic it wins
      by the most.
-   - **Best overall** — `best`: the highest average score across all cohorts, the pick
-     if they send one image to everyone. It can differ from the first winner; say so.
+   - **Best overall** — `best`: the winner with the highest average score across
+     all cohorts, the pick if they send one image to everyone. It can differ from the
+     first winner; say so.
    - **Images that won nothing** have no order — never rank them. If `close`: "its
      best audience prefers *(the `behind` image)*"; otherwise "no audience picked
      this image over the others". Never quote `behind_pct` as a number.
