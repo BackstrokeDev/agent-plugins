@@ -63,6 +63,9 @@ Done — 2 variant campaigns drafted. Review and schedule them in Klaviyo.
 /plugin install backstroke@backstroke-plugins
 ```
 
+Turn on auto-update so new versions reach you (it's off by default for this
+marketplace): `/plugin` → **Marketplaces** → `backstroke-plugins` → **Enable auto-update**.
+
 Then run the bundled **`setup`** skill once (connects + authorizes the MCP), and
 you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_STARTED.md)**.
 
@@ -75,7 +78,7 @@ you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_S
 | `update` | Update the plugin; check whether the installed skills are still in sync with the live MCP. |
 | `subject-line-ab-optimizer` | Read a Klaviyo campaign → per-cohort subject lines → approve → clone into variants. |
 | `hero-winner-picker` | Score candidate hero images for your audience → hand the winner to your email builder or ESP to build & send. |
-| `image-face-off` | Zero-setup: rank a few candidate images fast against the global panel. |
+| `image-face-off` | Zero-setup: find the winning image among a few candidates, fast, against the global panel. |
 
 **Planned (not yet shipped):** a per-cohort **predictive hero A/B test** — blocked until
 the cohort-id dynamic-string generator is exposed as an MCP tool.
@@ -108,7 +111,7 @@ we ship against (prod)**, call `tools/list`, observe real responses, and update
 > **re-read the traps/ergonomics for stale assertions**.
 
 ## Status
-v0.1 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
+v0.2 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
 claude.ai and other MCP clients can add the tools as a custom connector. Connects to
 the production Backstroke MCP (`mcp.backstroke.com/mcp`) over native HTTP with OAuth —
 no bridge, no keys (the server supports dynamic client registration). Just needs a

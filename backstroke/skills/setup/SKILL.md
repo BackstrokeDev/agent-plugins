@@ -38,6 +38,9 @@ Installing registers the `backstroke` MCP server from the plugin's bundled
 `.mcp.json` (native HTTP → `https://mcp.backstroke.com/mcp`). **Restart the agent
 after install** so it picks up the server.
 
+Turn on auto-update so new versions reach you (it's off by default for this
+marketplace): `/plugin` → **Marketplaces** → `backstroke-plugins` → **Enable auto-update**.
+
 Want just the tools, no plugin? Add the server directly:
 ```
 claude mcp add --transport http backstroke https://mcp.backstroke.com/mcp
