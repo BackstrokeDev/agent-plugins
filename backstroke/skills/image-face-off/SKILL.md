@@ -64,8 +64,8 @@ value in one tool call.
    - **Name each image the way the user knows it.** For uploaded files, `input_url`
      and `behind` are stored CDN URLs, not file names. From curl, match each URL to
      the `image_url` in that file's curl result and use its `name`. From the browser
-     link, the number at the end of the URL is the slot, from 0 in the order the user
-     added them: slot 0 is "your 1st image".
+     link, the number before the file extension is the slot, from 0 in the order the
+     user added them: slot 0 is "your 1st image".
    - **Winners** — `winners[]` is already ordered, most cohorts won first. Give each
      one's `win_count` of `cohort_count` cohorts, its `share` (the fraction of
      cohorts it wins: `score_hero_generic` always returns `share_basis: "cohorts"`;

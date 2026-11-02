@@ -88,8 +88,8 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    - **Name each image the way the user knows it.** For uploaded files, `input_url`
      and `behind` are stored CDN URLs, not file names. From curl, match each URL to
      the `image_url` in that file's curl result and use its `name`. From the browser
-     link, the number at the end of the URL is the slot, from 0 in the order the user
-     added them: slot 0 is "your 1st image".
+     link, the number before the file extension is the slot, from 0 in the order the
+     user added them: slot 0 is "your 1st image".
    - **Winners** — `winners[]` is already ordered, most cohorts won first. For each:
      `win_count` of `cohort_count` cohorts, its `share`, and `top_cohort` (the one
      cohort it wins by the most; may be null). Say what `share` is from `share_basis`:
