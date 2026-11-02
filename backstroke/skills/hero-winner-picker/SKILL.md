@@ -88,8 +88,11 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    - **Name each image the way the user knows it.** For uploaded files, `input_url`
      and `behind` are stored CDN URLs, not file names. From curl, match each URL to
      the `image_url` in that file's curl result and use its `name`. From the browser
-     link, the number before the file extension is the slot, from 0 in the order the
-     user added them: slot 0 is "your 1st image".
+     link, the slot is the number before the extension in the URL (`…/2.png` is slot
+     2), never a number in the user's own file name. Slots count only the files the
+     page added, from 0 in the order they were added; a refused file takes no slot,
+     so the files after it shift. If any file failed, say "the 2nd image that
+     uploaded" or ask the user which is which.
    - **Winners** — `winners[]` is already ordered, most cohorts won first. For each:
      `win_count` of `cohort_count` cohorts, its `share`, and `top_cohort` (the one
      cohort it wins by the most; may be null). Say what `share` is from `share_basis`:
@@ -100,7 +103,8 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
      all cohorts: the pick if they send **one** image to everyone. It can differ from
      the first winner; say so when it does. `best` can be null.
    - **Images that won nothing** have **no order** — never rank them. For each scored
-     image that isn't a winner: if `close`, say "its best audience prefers *(the
+     image that isn't a winner (match on `image_url`: one picture sent under two links
+     is still one winner): if `close`, say "its best audience prefers *(the
      `behind` image)*"; otherwise, or with no `behind`, "no audience picked this image
      over the others". Never quote `behind_pct` as a number.
    Recommend `best` for a send to everyone (e.g. "#3 wins the most cohorts, but #1 is

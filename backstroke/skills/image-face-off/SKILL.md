@@ -64,8 +64,11 @@ value in one tool call.
    - **Name each image the way the user knows it.** For uploaded files, `input_url`
      and `behind` are stored CDN URLs, not file names. From curl, match each URL to
      the `image_url` in that file's curl result and use its `name`. From the browser
-     link, the number before the file extension is the slot, from 0 in the order the
-     user added them: slot 0 is "your 1st image".
+     link, the slot is the number before the extension in the URL (`…/2.png` is slot
+     2), never a number in the user's own file name. Slots count only the files the
+     page added, from 0 in the order they were added; a refused file takes no slot,
+     so the files after it shift. If any file failed, say "the 2nd image that
+     uploaded" or ask the user which is which.
    - **Winners** — `winners[]` is already ordered, most cohorts won first. Give each
      one's `win_count` of `cohort_count` cohorts, its `share` (the fraction of
      cohorts it wins: `score_hero_generic` always returns `share_basis: "cohorts"`;
@@ -75,7 +78,8 @@ value in one tool call.
      all cohorts, the pick if they send one image to everyone. It can differ from the
      first winner; say so.
    - **Images that won nothing** have no order — never rank them. For each scored
-     image that isn't a winner: if `close`, "its best audience prefers *(the `behind`
+     image that isn't a winner (match on `image_url`: one picture sent under two links
+     is still one winner): if `close`, "its best audience prefers *(the `behind`
      image)*"; otherwise, or with no `behind`, "no audience picked this image over the
      others". Never quote `behind_pct` as a number.
    This is a read-only opinion; there's nothing to approve or send.
