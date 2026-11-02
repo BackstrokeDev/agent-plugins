@@ -63,6 +63,9 @@ Done — 2 variant campaigns drafted. Review and schedule them in Klaviyo.
 /plugin install backstroke@backstroke-plugins
 ```
 
+Turn on auto-update so new versions reach you (it's off by default for this
+marketplace): `/plugin` → **Marketplaces** → `backstroke-plugins` → **Enable auto-update**.
+
 Then run the bundled **`setup`** skill once (connects + authorizes the MCP), and
 you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_STARTED.md)**.
 
