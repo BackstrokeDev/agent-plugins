@@ -42,10 +42,11 @@ skill chains. Inlined so the skill runs without guessing.
   pick if you send one image to everyone. Can differ from the first winner; can be null.
 - **`images[]`** — one entry per submitted image, in input order. `refused` entries
   carry `code` + `message` (tell the user; retry once only if `retryable`). Animated
-  GIFs are refused (`animated_not_ranked`). A `scored` image that won nothing has
+  GIFs are refused (`animated_not_ranked`). A `scored` image that won nothing usually has
   `behind` (the `input_url` that beat it), `behind_pct`, `close`. **Images that won
   nothing are NOT ordered** — never rank them. Say "its best audience prefers
-  *behind*" when `close`, else "no audience picked this image over the others".
+  *behind*" when `close`, else (or with no `behind`) "no audience picked this image
+  over the others".
   Never quote `behind_pct` as a number.
 - **No per-cohort table and no named-segment pick** are returned. Don't promise either.
 - **`NO_COHORTS`** does **not** mean "no audiences." It's a data-sync state: the

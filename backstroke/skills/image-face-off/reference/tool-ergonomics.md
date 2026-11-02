@@ -28,10 +28,11 @@ skill uses. Inlined so the skill runs without guessing.
   pick if you send one image to everyone. Can differ from the first winner; can be null.
 - **`images[]`** — one entry per submitted image. `refused` entries carry `code` +
   `message` (tell the user; retry once only if `retryable`). Animated GIFs are
-  refused (`animated_not_ranked`). A `scored` image that won nothing has `behind`
-  (the `input_url` that beat it), `behind_pct`, `close`. **Images that won nothing
-  are NOT ordered.** Say "its best audience prefers *behind*" when `close`, else "no
-  audience picked this image over the others". Never quote `behind_pct` as a number.
+  refused (`animated_not_ranked`). A `scored` image that won nothing usually has
+  `behind` (the `input_url` that beat it), `behind_pct`, `close`. **Images that won
+  nothing are NOT ordered.** Say "its best audience prefers *behind*" when `close`,
+  else (or with no `behind`) "no audience picked this image over the others". Never
+  quote `behind_pct` as a number.
 - No per-cohort table is returned.
 - **Async:** may return `status:"pending"` + `run_id` on a cold run → poll
   `get_hero_scores`. When it completes synchronously, the result is inline.

@@ -23,7 +23,8 @@ invisible until someone names it).
 - **Upload your own image files** — have images on your machine instead of links? The
   hero skills now get you an upload link and score them. No hosting step.
 - **Changed:** no per-cohort table and no named-segment pick come back any more, and
-  animated GIFs are declined. Send the winner broadly or use your own segment.
+  animated GIFs are declined. Send the best overall image broadly, or use your own
+  segment.
 
 ## 0.1.0
 - **Subject-line A/B optimizer** — stronger, per-audience subject lines for a Klaviyo

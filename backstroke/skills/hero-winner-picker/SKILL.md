@@ -85,6 +85,11 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    has a result in `images[]` — report each `refused` one with its `message`
    (retry once only if `retryable` is true; animated GIFs are refused with
    `animated_not_ranked`).
+   - **Name each image the way the user knows it.** For uploaded files, `input_url`
+     and `behind` are stored CDN URLs, not file names. From curl, match each URL to
+     the `image_url` in that file's curl result and use its `name`. From the browser
+     link, the number at the end of the URL is the slot, from 0 in the order the user
+     added them: slot 0 is "your 1st image".
    - **Winners** — `winners[]` is already ordered, most cohorts won first. For each:
      `win_count` of `cohort_count` cohorts, its `share`, and `top_cohort` (the one
      cohort it wins by the most; may be null). Say what `share` is from `share_basis`:
@@ -94,18 +99,19 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    - **Best overall** — `best` is the winner with the highest average score across
      all cohorts: the pick if they send **one** image to everyone. It can differ from
      the first winner; say so when it does. `best` can be null.
-   - **Images that won nothing** have **no order** — never rank them. A scored image
-     with `behind` set: if `close`, say "its best audience prefers *(that image)*";
-     otherwise "no audience picked this image over the others". Never quote
-     `behind_pct` as a number.
-   Confirm which image the user wants to move forward with.
+   - **Images that won nothing** have **no order** — never rank them. For each scored
+     image that isn't a winner: if `close`, say "its best audience prefers *(the
+     `behind` image)*"; otherwise, or with no `behind`, "no audience picked this image
+     over the others". Never quote `behind_pct` as a number.
+   Recommend `best` for a send to everyone (e.g. "#3 wins the most cohorts, but #1 is
+   the best single image for everyone"), then confirm which image the user wants.
 
 5. **Hand off (to the customer's OTHER MCP).** With the chosen `image_url`
    (`winners[].image_url` or `best.image_url`), drive the *user's own* connectors:
    - **Beefree MCP** → build/assemble the email around the chosen image.
    - **Cordial / Klaviyo MCP** → schedule the send. Send broadly: the scorer returns
      no named segment to target (the demographic panel is a model descriptor, not a
-     Klaviyo segment). Use the winners only to inform which image goes out.
+     Klaviyo segment). Send `best` unless the user picked another image.
    These are **write** actions on the user's account → get explicit approval of
    what's being built/sent before calling them, same rule as any write.
    - If the user has **no** other MCP connected, stop at the recommendation and
@@ -144,10 +150,11 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 2. `score_hero_for_my_audience({ image_urls:[4] })` → `status:"completed"`,
    `cohort_count: 5`, `share_basis:"audience"`. Winners: #3 wins 3 cohorts (62% of
    the audience, strongest in "female / 30-44 / south / medium"); #1 wins 2 (38%).
-   `best` is #3. #2 and #4 won nothing: #2 is `close`, so "its best audience prefers
+   `best` is #1. #2 and #4 won nothing: #2 is `close`, so "its best audience prefers
    #3"; for #4, "no audience picked it over the others".
-3. Show the winners + best overall → user confirms #3.
-4. **[Beefree MCP]** assemble the email with image #3 → user approves the draft.
+3. Show the winners + best overall: "#3 wins the most cohorts, but #1 is the best
+   single image for everyone" → user confirms #1.
+4. **[Beefree MCP]** assemble the email with image #1 → user approves the draft.
 5. **[Cordial MCP]** schedule the send (broadly — no segment pick comes back) →
    user approves → sent.
 

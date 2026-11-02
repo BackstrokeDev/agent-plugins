@@ -61,6 +61,11 @@ value in one tool call.
 4. **Report.** Every submitted image has a result in `images[]` — report each
    `refused` one with its `message` (retry once only if `retryable` is true; animated
    GIFs are refused with `animated_not_ranked`). Then:
+   - **Name each image the way the user knows it.** For uploaded files, `input_url`
+     and `behind` are stored CDN URLs, not file names. From curl, match each URL to
+     the `image_url` in that file's curl result and use its `name`. From the browser
+     link, the number at the end of the URL is the slot, from 0 in the order the user
+     added them: slot 0 is "your 1st image".
    - **Winners** — `winners[]` is already ordered, most cohorts won first. Give each
      one's `win_count` of `cohort_count` cohorts, its `share` (the fraction of
      cohorts it wins: `score_hero_generic` always returns `share_basis: "cohorts"`;
@@ -69,9 +74,10 @@ value in one tool call.
    - **Best overall** — `best`: the winner with the highest average score across
      all cohorts, the pick if they send one image to everyone. It can differ from the
      first winner; say so.
-   - **Images that won nothing** have no order — never rank them. If `close`: "its
-     best audience prefers *(the `behind` image)*"; otherwise "no audience picked
-     this image over the others". Never quote `behind_pct` as a number.
+   - **Images that won nothing** have no order — never rank them. For each scored
+     image that isn't a winner: if `close`, "its best audience prefers *(the `behind`
+     image)*"; otherwise, or with no `behind`, "no audience picked this image over the
+     others". Never quote `behind_pct` as a number.
    This is a read-only opinion; there's nothing to approve or send.
 
 ## Traps
