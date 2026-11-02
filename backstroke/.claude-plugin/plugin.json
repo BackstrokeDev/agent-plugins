@@ -1,6 +1,6 @@
 {
   "name": "backstroke",
   "description": "Build with Backstroke in Claude Code — predictive subject-line ranking and hero-image scoring that chain into your ESP.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": { "name": "Backstroke" }
 }

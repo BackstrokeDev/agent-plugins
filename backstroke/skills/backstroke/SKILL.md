@@ -34,7 +34,7 @@ with the live Backstroke MCP, run the **`update`** skill.
 | Get stronger, audience-tailored subject lines for an existing Klaviyo campaign, set up as A/B variants | **`subject-line-ab-optimizer`** | Yes — Klaviyo (gated) |
 | Just see subject-line ideas for pasted email copy (no campaign, no write) | call `predict_subject_lines` directly | No |
 | Pick the winning hero image among candidates and build/send it in another tool | **`hero-winner-picker`** | No (hand-off is a write — gated) |
-| Quickly rank a few candidate images with zero account setup | **`image-face-off`** | No |
+| Quickly find the winning image among a few candidates, zero account setup | **`image-face-off`** | No |
 
 **Planned — not yet available**
 - **Predictive hero A/B test** — A/B test the *per-cohort* predictive hero (each cohort

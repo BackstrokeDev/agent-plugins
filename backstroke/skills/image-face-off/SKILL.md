@@ -3,22 +3,24 @@ name: image-face-off
 description: >-
   Use when a marketer has a few candidate hero/creative images and just wants a
   fast "which one is stronger?" — zero account setup, no ESP, no write. Scores
-  the images against Backstroke's global demographic panel and returns them
-  ranked best-first, with the demographic each image over-indexes with. For a
-  ranking tailored to the user's OWN audience, use hero-winner-picker instead.
+  the images against Backstroke's global demographic panel and returns the
+  winners (most cohorts won first), the best overall image, and the demographic
+  each winner is strongest with. For a result tailored to the user's OWN
+  audience, use hero-winner-picker instead.
 allowed-tools:
   - score_hero_generic
+  - request_image_upload
   - get_hero_scores
 ---
 
 # Playbook: image face-off (zero-setup)
 
-The fastest way to answer "which of these images wins?" — paste 1–50 image URLs,
-get them ranked. No account, no cohorts, no send. This is the first-run demo:
+The fastest way to answer "which of these images wins?" — paste 1–50 image URLs
+(or upload image files), get the winners. No account, no cohorts, no send. This is the first-run demo:
 value in one tool call.
 
 ## When to use this
-- "Which of these hero images is strongest?" with a handful of image URLs.
+- "Which of these hero images is strongest?" with a handful of image URLs or files.
 - The user has no Backstroke audience set up, or explicitly wants a general read.
 - A quick gut-check before committing to a campaign image.
 
@@ -33,27 +35,42 @@ value in one tool call.
 | Step | Tool | Purpose |
 |------|------|---------|
 | 1 | *(collect image URLs)* | From the user, or a page/campaign they point to. |
-| 2 | `score_hero_generic` | Rank the images against the global demographic panel. |
+| 1 | `request_image_upload` *(optional)* | Upload link for image files the user has instead of links. |
+| 2 | `score_hero_generic` | Score the images against the global demographic panel. |
 | 2a | `get_hero_scores` | Poll if step 2 returns `status:"pending"`. |
 
 ## Exact sequence
 
 1. **Collect candidate images.** Gather 1–50 **public** image URLs from the user.
    If they gave a page/asset rather than direct URLs, resolve to direct image
-   URLs first. (Max 50; all must be publicly reachable.)
+   URLs first. (Max 50; all must be publicly reachable.) If they have image
+   **files** instead, call `request_image_upload` (no input), upload each file with
+   the returned `curl_command` (one curl per file) — or, if you can't run code, give
+   the user the `upload_url` and wait for them to say they're done — then pass the
+   `upload_id` in step 2. (`image_urls` and `upload_id` can be combined, 50 in all.)
 
-2. **Score.** Call `score_hero_generic` with `image_urls: [...]`. Add
-   `include_breakdown: true` only if the user wants the per-cohort score for each
-   image (otherwise just the cross-cohort ranking comes back — leaner).
+2. **Score.** Call `score_hero_generic` with `image_urls: [...]` and/or `upload_id`.
+   Each cohort in the panel gets one winning image, so you get a set of winners, not
+   a leaderboard.
 
 3. **Handle the async path.** If the result's `status` is `"pending"`, it returns
    a `run_id` (a COLD run). Poll `get_hero_scores(run_id)` until `status` is
    `"completed"`. If it comes back `"failed"`, report the failure reason and stop.
 
-4. **Report.** Present the images **ranked best-first**: the winner called out,
-   each image's score, and the **demographic it over-indexes with**. If you asked
-   for the breakdown, summarize per-cohort strengths compactly — don't dump every
-   number. This is a read-only opinion; there's nothing to approve or send.
+4. **Report.** Every submitted image has a result in `images[]` — report each
+   `refused` one with its `message` (retry once only if `retryable` is true; animated
+   GIFs are refused with `animated_not_ranked`). Then:
+   - **Winners** — `winners[]` is already ordered, most cohorts won first. Give each
+     one's `win_count` of `cohort_count` cohorts, its `share` (by `share_basis`:
+     `"audience"` = % of the audience in the cohorts it wins; `"cohorts"` = fraction
+     of cohorts won; omit a null `share`) and `top_cohort`, the demographic it wins
+     by the most.
+   - **Best overall** — `best`: the highest average score across all cohorts, the pick
+     if they send one image to everyone. It can differ from the first winner; say so.
+   - **Images that won nothing** have no order — never rank them. If `close`: "its
+     best audience prefers *(the `behind` image)*"; otherwise "no audience picked
+     this image over the others". Never quote `behind_pct` as a number.
+   This is a read-only opinion; there's nothing to approve or send.
 
 ## Traps
 1. **Global panel, not the user's audience.** These scores are against a *generic*
@@ -64,18 +81,21 @@ value in one tool call.
    score. If one image errors, note it and score the rest.
 3. **Pending is normal on a cold run.** Don't treat `status:"pending"` as an
    error — poll `get_hero_scores` until it completes.
-4. **Files aren't URLs.** The scorer takes hosted image *URLs* only — it can't
-   accept an uploaded or dragged-in image file. If the user attaches a JPEG/PNG,
-   ask them to share the hosted link (or point to where it already lives online).
+4. **Files aren't URLs.** The scorer reads hosted image URLs or an `upload_id`.
+   If the user attaches a JPEG/PNG, call `request_image_upload` and score by
+   `upload_id` — don't ask them to host it first.
+5. **Don't invent an order.** Only winners are ordered; `best` is a separate pick.
+   There's no per-cohort table to share — if asked, say it isn't available.
 
 ## Example run
 > **User:** "Which of these 4 banner images looks strongest?" (4 URLs)
 
 1. Collect the 4 URLs.
-2. `score_hero_generic({ image_urls: [4 urls] })` → `status:"completed"`, ranked.
-3. Report: "#2 wins (0.84), over-indexes with **women 25–34**; #4 close behind
-   (0.81); #1 and #3 trail." Offer: "Want this scored against *your* audience
-   instead? → hero-winner-picker."
+2. `score_hero_generic({ image_urls: [4 urls] })` → `status:"completed"`.
+3. Report: "#2 wins 4 of 6 cohorts, strongest with **women 25–34**; #4 wins the other 2.
+   #2 is also the best overall — the one to send everyone. #1 and #3 won nothing:
+   #1's best audience prefers #2; no audience picked #3 over the others." Offer:
+   "Want this scored against *your* audience instead? → hero-winner-picker."
 
 ## Hand-offs
 - Score for the user's **own** audience, or act on the winner downstream →

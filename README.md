@@ -75,7 +75,7 @@ you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_S
 | `update` | Update the plugin; check whether the installed skills are still in sync with the live MCP. |
 | `subject-line-ab-optimizer` | Read a Klaviyo campaign → per-cohort subject lines → approve → clone into variants. |
 | `hero-winner-picker` | Score candidate hero images for your audience → hand the winner to your email builder or ESP to build & send. |
-| `image-face-off` | Zero-setup: rank a few candidate images fast against the global panel. |
+| `image-face-off` | Zero-setup: find the winning image among a few candidates, fast, against the global panel. |
 
 **Planned (not yet shipped):** a per-cohort **predictive hero A/B test** — blocked until
 the cohort-id dynamic-string generator is exposed as an MCP tool.

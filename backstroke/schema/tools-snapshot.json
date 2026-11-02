@@ -1,8 +1,8 @@
 {
   "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was actually observed — absent means not yet verified, not empty.",
   "endpoint": "https://mcp.backstroke.com/mcp",
-  "verifiedAgainst": "prod, 2026-08-11",
-  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch"],
+  "verifiedAgainst": "prod, 2026-08-11 (hero tools and request_image_upload: the v2 contract from source, before its prod deploy; re-verify against prod after it ships)",
+  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request"],
   "tools": {
     "predict_subject_lines": {
       "required": [],
@@ -13,16 +13,24 @@
       "params": ["segment_id", "email_html", "email_text", "rendered_image_url", "controls", "brand_context", "campaign_id", "klaviyo_campaign_id"]
     },
     "score_hero_generic": {
-      "required": ["image_urls"],
-      "params": ["image_urls", "include_breakdown"]
+      "required": [],
+      "params": ["image_urls", "upload_id"],
+      "outputFields": ["status", "run_id", "cohort_count", "share_basis", "winners", "best", "images"]
     },
     "score_hero_for_my_audience": {
-      "required": ["image_urls"],
-      "params": ["image_urls", "include_breakdown"]
+      "required": [],
+      "params": ["image_urls", "upload_id"],
+      "outputFields": ["status", "run_id", "cohort_count", "share_basis", "winners", "best", "images"]
     },
     "get_hero_scores": {
       "required": ["run_id"],
-      "params": ["run_id"]
+      "params": ["run_id"],
+      "outputFields": ["status", "cohort_count", "share_basis", "winners", "best", "images", "error", "error_type", "retryable"]
+    },
+    "request_image_upload": {
+      "required": [],
+      "params": [],
+      "outputFields": ["upload_id", "upload_url", "curl_command", "max_files", "max_bytes", "expires_at"]
     },
     "list_cohorts": {
       "required": [],
@@ -54,5 +62,13 @@
     }
   },
   "retiredNames": {},
-  "retiredFields": {}
+  "retiredFields": {
+    "ranked": "(removed: use winners, then best)",
+    "per_cohort": "(removed: the per-cohort table is no longer returned)",
+    "per_segment": "(removed: no named-segment pick exists)",
+    "top_cohort_name": "(renamed: top_cohort, on each winner)",
+    "top_cohort_id": "(removed: use top_cohort, on each winner)",
+    "cohort_name": "(removed: the per-cohort table is no longer returned)",
+    "include_breakdown": "(removed: the input no longer exists)"
+  }
 }

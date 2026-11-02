@@ -34,7 +34,7 @@ Inlined so the skill runs without guessing.
   mapped Klaviyo segment, e.g. `"ABCDEF"`). Names may carry a trailing newline — trim
   before display.
 - These are **Klaviyo segments** — a *different* "cohort" from the demographic panels
-  the hero scorers report (`top_cohort_name`). Their ids are not interchangeable.
+  the hero scorers report (`top_cohort`). Their ids are not interchangeable.
 - **`targetable: true`** ⇒ maps to a Klaviyo segment ⇒ pushable in step 6.
   `targetable: false` ⇒ generation OK, push will fail.
 - Pass the cohort `id` (integer) as `segment_id` to the predict/push tools —
