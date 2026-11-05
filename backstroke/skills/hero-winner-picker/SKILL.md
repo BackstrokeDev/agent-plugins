@@ -131,8 +131,8 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    the user a targetable segment — the hero tools return no named-segment pick.
 3. **`NO_COHORTS` ≠ "no audiences."** It's a data-sync state (subscribers not mapped
    into panels), independent of whether the account has Klaviyo segments or whether
-   `predict_subject_lines_for_my_audience` works. Fall back to `score_hero_generic`
-   and say the result is global.
+   per-cohort subject lines work. Fall back to `score_hero_generic` and say the
+   result is global.
 4. **Filter `images[]` before scoring** — it includes logo/social/footer graphics;
    score only real heroes (use `alt`).
 5. **Pending is normal** on a cold run — poll `get_hero_scores`, don't treat it as

@@ -55,6 +55,8 @@ const toolNames = new Set(Object.keys(snap.tools));
 const verbPrefixes = snap.verbPrefixes ?? [];
 const retired = snap.retiredNames ?? {};
 const retiredFields = snap.retiredFields ?? {};
+// A known param, output field or refusal code (e.g. `subject_line_options`, `push_failed`) is not a tool call.
+const knownFields = new Set(Object.values(snap.tools).flatMap((t) => [...(t.params ?? []), ...(t.outputFields ?? []), ...(t.refusals ?? [])]));
 const errors = [];
 
 // Walk every .md under skills/
@@ -114,7 +116,7 @@ for (const file of files) {
       errors.push(`${rel}: references retired tool "${tok}" — renamed to "${retired[tok]}".`);
       continue;
     }
-    const looksLikeTool = tok.includes("_") && verbPrefixes.includes(tok.split("_")[0]);
+    const looksLikeTool = tok.includes("_") && verbPrefixes.includes(tok.split("_")[0]) && !knownFields.has(tok);
     if (looksLikeTool && !toolNames.has(tok)) {
       errors.push(`${rel}: "\`${tok}\`" looks like a tool call but is not a known MCP tool (typo or drift?).`);
     }

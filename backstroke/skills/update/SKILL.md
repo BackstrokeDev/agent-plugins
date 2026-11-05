@@ -94,8 +94,7 @@ shipped" into "a marketer actually adopts it."
 
 After updating, read `CHANGELOG.md` and present the entries newer than the version
 that *was* installed, **in plain English** — pair each with what it does for the
-marketer, and give a starter prompt. Not "v0.2 adds `generate_predictive_heroes`",
-but:
+marketer, and give a starter prompt. Not "v0.2 adds a predictive-heroes tool", but:
 
 > **New — Predictive heroes:** generate the hero image(s) most likely to win for a
 > campaign, not just rank the ones you already have. Try: *"make me a winning hero
