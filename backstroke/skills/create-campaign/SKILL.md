@@ -12,7 +12,6 @@ allowed-tools:
   - get_campaign_status
   - generate_subject_lines
   - push_campaign_to_klaviyo
-  - schedule_campaign
 ---
 
 # Playbook: create a campaign from a prompt
@@ -53,7 +52,8 @@ retry blindly.
    and `campaign_id`, or, when the email is built, generate subject lines or push
    again. Give the person the `app_url` so they can review the email in
    Backstroke. To change the draft, call `create_campaign` again with `campaign_id`
-   and only the fields that change.
+   and only the fields that change. Give `build: true` only when the person wants a
+   new email: it replaces the built one, with any edits made in the builder.
 
 4. **Offer subject lines.** They do not start by themselves. On a yes, call
    `generate_subject_lines` with the `campaign_id`, then poll `get_campaign_status`
@@ -65,9 +65,9 @@ retry blindly.
    subject, the links and the `app_url`. On a yes, apply, then poll
    `get_campaign_status` until `step` is `pushed`. It is now a draft in Klaviyo.
 
-6. **Schedule the send.** Preview `schedule_campaign` with `date`, `time` and
-   `timezone` in the formats its description gives, or with `send_now: true` alone
-   (sends in about 15 minutes). Show the send
+6. **Schedule the send.** Ask which time zone the send time is in; never guess it.
+   Preview `schedule_campaign` with `date`, `time` and `timezone` in the formats its
+   description gives, or with `send_now: true` alone (sends in about 15 minutes). Show the send
    time, every audience and exclusion, and every warning. On an explicit yes to this
    send time and these audiences, apply it (Trap 1), then confirm with
    `get_campaign_status` that `step` is `scheduled`.

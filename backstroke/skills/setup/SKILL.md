@@ -76,11 +76,12 @@ page at `app.backstroke.com` — sign in with your account and approve.
 - **No keys, no client id to paste.** The server supports dynamic client
   registration, so your client registers itself automatically as a public OAuth
   client and logs you in as yourself — you only ever see your own data.
-- **What you're granting.** There are three scopes:
+- **What you're granting.** There are four scopes:
   - `subject_lines:generate` — the prediction and read tools.
   - `klaviyo:write` — "Write campaigns and subject lines to your Klaviyo account":
-    `push_subject_lines`, `push_campaign_to_klaviyo` and `schedule_campaign`.
+    `push_subject_lines` and `push_campaign_to_klaviyo`.
   - `campaigns:write` — "Create and change campaigns in Backstroke": `create_campaign`.
+  - `klaviyo:send` — "Schedule campaigns to send to your Klaviyo audiences": `schedule_campaign`.
 
   Every write first shows you a preview of exactly what changes, and writes only
   after you say yes. If a write tool asks you to sign in again, it
