@@ -65,9 +65,9 @@ retry blindly.
    subject, the links and the `app_url`. On a yes, apply, then poll
    `get_campaign_status` until `step` is `pushed`. It is now a draft in Klaviyo.
 
-6. **Schedule the send.** Preview `schedule_campaign` with `date` (`December 01
-   2030`), `time` (`7:00 PM`) and `timezone` (an IANA name, or `Recipient's Local Time
-   Zone`), or with `send_now: true` alone (sends in about 15 minutes). Show the send
+6. **Schedule the send.** Preview `schedule_campaign` with `date`, `time` and
+   `timezone` in the formats its description gives, or with `send_now: true` alone
+   (sends in about 15 minutes). Show the send
    time, every audience and exclusion, and every warning. On an explicit yes to this
    send time and these audiences, apply it (Trap 1), then confirm with
    `get_campaign_status` that `step` is `scheduled`.
