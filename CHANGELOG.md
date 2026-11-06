@@ -21,11 +21,11 @@ invisible until someone names it).
   and audiences. Run the new `create-campaign` recipe.
 - **One subject-line tool** — `generate_subject_lines` writes ideas for a Backstroke
   campaign or for any email you paste, in your saved brand voice.
-- Reconnect once to approve the new permission for campaigns.
+- Reconnect once to approve two new permissions: making campaigns, and scheduling
+  them to send.
 
 ## 0.3.0
-- **See the push before it happens** (on accounts with the new push; others keep the
-  current push until it reaches them) — the subject-line push shows you exactly
+- **See the push before it happens** — the subject-line push shows you exactly
   what it will write to Klaviyo, including that your original campaign is unscheduled
   once every variant lands, and writes only after you say yes. A retry after a timeout
   is safe: it never creates the variants twice.
