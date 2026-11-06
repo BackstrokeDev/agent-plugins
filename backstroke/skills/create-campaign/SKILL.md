@@ -43,8 +43,9 @@ retry blindly.
 
 2. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls` and
    `audiences`. Show the diff (products, audiences, template) and the warnings — the
-   build uses paid AI and takes a few minutes. On a yes, apply it and keep the
-   `campaign_id`.
+   build uses paid AI and takes a few minutes. When the diff lists `other_templates`,
+   ask which template to use (the default is the newest), and preview again with its
+   `template_name` if they pick another. On a yes, apply it and keep the `campaign_id`.
 
 3. **Wait for the build.** Poll `get_campaign_status` with the `campaign_id` about
    once a minute until its `step` is `built`. On `error`, show the `error_message`
