@@ -11,8 +11,24 @@ invisible until someone names it).
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
 - **Predictive heroes** — *generate* the hero image(s) most likely to win for a
   campaign, instead of only ranking the ones you already have. A whole new move:
-  "make me a winning hero for this campaign." Recipe lands when the
-  `generate_predictive_heroes` tool ships.
+  "make me a winning hero for this campaign." Recipe lands when its tool ships.
+
+## 0.4.0
+- **Make a campaign from one prompt** — describe the email, the products and the
+  audience; Backstroke writes the brief, builds the email, offers subject lines,
+  pushes it to Klaviyo and schedules the send. You see a preview of every step and
+  say yes before anything is written; scheduling needs a yes to the exact send time
+  and audiences. Run the new `create-campaign` recipe.
+- **One subject-line tool** — `generate_subject_lines` writes ideas for a Backstroke
+  campaign or for any email you paste, in your saved brand voice.
+- Reconnect once to approve two new permissions: making campaigns, and scheduling
+  them to send.
+
+## 0.3.0
+- **See the push before it happens** — the subject-line push shows you exactly
+  what it will write to Klaviyo, including that your original campaign is unscheduled
+  once every variant lands, and writes only after you say yes. A retry after a timeout
+  is safe: it never creates the variants twice.
 
 ## 0.2.0
 - **Hero winners, not a leaderboard** — the hero skills now name the images that win

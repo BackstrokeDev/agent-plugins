@@ -51,8 +51,8 @@ skill chains. Inlined so the skill runs without guessing.
 - **No per-cohort table and no named-segment pick** are returned. Don't promise either.
 - **`NO_COHORTS`** does **not** mean "no audiences." It's a data-sync state: the
   account's subscribers aren't mapped into panels yet. It can fire even when
-  `list_cohorts` returns many cohorts and `predict_subject_lines_for_my_audience`
-  works. Fall back to `score_hero_generic` or `image-face-off`.
+  `list_cohorts` returns many cohorts and per-cohort subject lines work. Fall back
+  to `score_hero_generic` or `image-face-off`.
 - **Async:** may return `status:"pending"` + `run_id` → poll `get_hero_scores`.
 - Read-only.
 

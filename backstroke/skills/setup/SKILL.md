@@ -21,9 +21,9 @@ gives you the guided **recipes** *and* the connection; a plain **custom connecto
 (claude.ai web, or any MCP client) gives you the **tools** only.
 
 ## Before you start
-- **A Backstroke account enabled for the MCP connector** — your account needs the
-  `headless_mcp` flag. If it's not enabled you'll see "This account is not enabled
-  for the Backstroke MCP connector" — ping an admin.
+- **A Backstroke account enabled for the MCP connector.** If it's not enabled, a message
+  says the account or brand isn't enabled for the Backstroke MCP connector — ask
+  Backstroke to enable it.
 
 (No Node.js or `npx` required anymore — the server is reached over native HTTP.)
 
@@ -76,11 +76,22 @@ page at `app.backstroke.com` — sign in with your account and approve.
 - **No keys, no client id to paste.** The server supports dynamic client
   registration, so your client registers itself automatically as a public OAuth
   client and logs you in as yourself — you only ever see your own data.
-- **What you're granting.** The consent screen asks for two scopes:
-  `subject_lines:generate` (the read-only prediction tools) and `klaviyo:write`.
-  The write scope is used **only** by the subject-line push
-  (`push_subject_lines_to_klaviyo`), which always shows you the exact lines and
-  asks before writing — nothing is pushed to Klaviyo silently.
+- **What you're granting.** There are four scopes:
+  - `subject_lines:generate` — the prediction and read tools.
+  - `klaviyo:write` — "Write campaigns and subject lines to your Klaviyo account":
+    `push_subject_lines` and `push_campaign_to_klaviyo`.
+  - `campaigns:write` — "Create and change campaigns in Backstroke": `create_campaign`.
+  - `klaviyo:send` — "Schedule campaigns to send to your Klaviyo audiences": `schedule_campaign`.
+
+  Every write first shows you a preview of exactly what changes, and writes only
+  after you say yes. If a write tool asks you to sign in again, it
+  needs a scope your first consent didn't grant — approve it on the consent page.
+
+### Image files (optional)
+The hero tools can score image **files** through `request_image_upload`. The fast path
+runs `curl` from Claude, so it needs code execution turned on and the Backstroke API
+host (`api.backstroke.com`) on the allowed domains list in your Claude settings.
+Without that, the tool gives you an `upload_url` to open in the browser instead.
 
 ## 3. Verify
 Run a harmless read-only call, e.g. **`list_cohorts`** or `list_klaviyo_campaigns`. A
@@ -102,7 +113,9 @@ Run the **`backstroke`** skill — it's the entry point that picks the right rec
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| "This account is not enabled for the Backstroke MCP connector" | Account missing the `headless_mcp` flag | Ask an admin to enable it for your account. |
+| A message that the account or brand isn't enabled for the Backstroke MCP connector | The account or brand isn't enabled for the connector | Ask Backstroke to enable it; if you have other brands, `switch_account` to an enabled one. |
+| A daily limit message on `create_campaign` or `generate_subject_lines` | The brand reached that tool's daily limit | Wait until the time the message names; previews don't count. |
+| `curl` to the upload host fails or can't connect | Code execution is off, or the host isn't on the allowed domains list | Use the `upload_url` in the browser, or add the host in your Claude settings. |
 | A tool call returns `ENTITLEMENT_DENIED` | Connect + auth worked, but your account isn't entitled to that specific tool/feature | Ask an admin to enable that tool for your account; other tools keep working. |
 | Backstroke tools don't appear after install | Agent not restarted; server registers at startup | Restart the agent (fully quit + reopen on Desktop), then retry. |
 | Every tool call returns **401** / "not connected" | OAuth not completed / token expired | Re-run the auth flow; finish the browser consent at `app.backstroke.com`. |

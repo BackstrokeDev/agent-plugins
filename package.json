@@ -1,6 +1,6 @@
 {
   "name": "backstroke-agent-plugins",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "private": true,
   "license": "UNLICENSED",
   "description": "Backstroke plugin for Claude Code — predictive marketing skills that chain into your ESP.",

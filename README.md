@@ -19,7 +19,8 @@
 
 <p align="center">
 Backstroke is the <strong>prediction layer</strong> for email marketing — it tells
-you which subject line or hero image will win, per audience. This repo is the
+you which subject line or hero image will win, per audience, and can make, push and
+schedule the campaign around them. This repo is the
 plugin marketplace for the <code>backstroke</code> plugin: the MCP connection plus
 a set of skills (recipes) that chain Backstroke's predictions into the ESP you
 already use.
@@ -47,11 +48,12 @@ connection and feeds its predictions into their workflows.
 ⏺ list_klaviyo_campaigns (Backstroke)   → "Father's Day Sale"
 ⏺ read_campaign_content (Backstroke)    → body + hero images
 ⏺ list_cohorts (Backstroke)             → Lapsed buyers · VIP repeat  (both targetable)
-⏺ predict_subject_lines_for_my_audience → 5 ranked ideas per cohort
+⏺ generate_subject_lines (Backstroke)   → 5 ranked ideas per cohort
 
   → shows ideas, asks you to approve one per cohort   ← you approve here
 
-⏺ push_subject_lines_to_klaviyo (Backstroke, write)  → 2 variant drafts in Klaviyo
+⏺ push_subject_lines (Backstroke)          → preview: exactly what will be written
+⏺ push_subject_lines + fingerprint (write) → 2 variant drafts in Klaviyo
 
 Done — 2 variant campaigns drafted. Review and schedule them in Klaviyo.
 ```
@@ -76,6 +78,7 @@ you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_S
 | `setup` | Connect + authorize the Backstroke MCP; verify it works. Run first. |
 | `backstroke` | Entry point — picks the right recipe for the job. |
 | `update` | Update the plugin; check whether the installed skills are still in sync with the live MCP. |
+| `create-campaign` | Prompt → brief → built campaign → subject lines → push to Klaviyo → schedule, each write approved first. |
 | `subject-line-ab-optimizer` | Read a Klaviyo campaign → per-cohort subject lines → approve → clone into variants. |
 | `hero-winner-picker` | Score candidate hero images for your audience → hand the winner to your email builder or ESP to build & send. |
 | `image-face-off` | Zero-setup: find the winning image among a few candidates, fast, against the global panel. |
@@ -111,7 +114,7 @@ we ship against (prod)**, call `tools/list`, observe real responses, and update
 > **re-read the traps/ergonomics for stale assertions**.
 
 ## Status
-v0.2 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
+v0.4 — early. Claude Code and Claude Desktop install the plugin (tools + recipes);
 claude.ai and other MCP clients can add the tools as a custom connector. Connects to
 the production Backstroke MCP (`mcp.backstroke.com/mcp`) over native HTTP with OAuth —
 no bridge, no keys (the server supports dynamic client registration). Just needs a
