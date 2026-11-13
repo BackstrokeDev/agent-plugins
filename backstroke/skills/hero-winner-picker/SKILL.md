@@ -33,8 +33,8 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 - The images are files on the user's machine or in the chat, not links (upload them first).
 
 **When NOT to use this**
-- No audience / just a quick general read → `image-face-off` (global panel, zero
-  setup).
+- No audience / just a quick general read → `image-face-off` (global demographic
+  cohorts, zero setup).
 - The user wants **subject lines** for a Klaviyo campaign, not hero images →
   `subject-line-ab-optimizer`.
 
@@ -44,7 +44,7 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 |------|------|-------|---------|
 | 1 | `read_campaign_content` *(optional)* | Backstroke | Pull `images[].src` from a named Klaviyo campaign. |
 | 1 | `request_image_upload` *(optional)* | Backstroke | Get an upload link when the images are files, not links. |
-| 2 | `score_hero_for_my_audience` | Backstroke | Score images against the account's audience (as demographic panels). |
+| 2 | `score_hero_for_my_audience` | Backstroke | Score images against the account's audience (as demographic cohorts). |
 | 2a | `get_hero_scores` | Backstroke | Poll if step 2 returns `status:"pending"`. |
 | 3 | *(present winners + best overall; user picks)* | — | Confirm the image to move forward with. |
 | 4 | build/send tools | **the customer's Beefree / Cordial / Klaviyo MCP** | Assemble the email + schedule — via *their* connector, not Backstroke. |
@@ -70,12 +70,12 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    `image_urls: [...]` (the filtered heroes) and/or `upload_id`. The scorer assigns
    each cohort one winning image, so the result is a set of **winners**, not a
    leaderboard. A winner's `top_cohort` (e.g. "male / 45-60 / east / medium") names a
-   **demographic panel** — **not** a named Klaviyo segment from `list_cohorts` (that's
-   a different "cohort"). No named-segment pick comes back; don't promise one.
+   **demographic cohort** — not a Klaviyo list or segment, and not a Cluster. No
+   named-segment pick comes back; don't promise one.
    - **`NO_COHORTS`** does **not** mean "no audiences." It means this account's
-     subscribers aren't synced into the demographic panels the audience scorer needs
+     subscribers aren't synced into the demographic cohorts the audience scorer needs
      (a data/sync state) — an account can have Klaviyo segments *and* still return
-     NO_COHORTS. Fall back to `score_hero_generic` (global panel), tell the user the
+     NO_COHORTS. Fall back to `score_hero_generic` (global demographic cohorts), tell the user the
      result isn't audience-tailored, or point them at `image-face-off`.
 
 3. **Handle the async path.** If `status` is `"pending"`, poll
@@ -96,16 +96,16 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    - **Winners** — `winners[]` is already ordered, most cohorts won first. For each:
      `win_count` of `cohort_count` cohorts, its `share`, and `top_cohort` (the one
      cohort it wins by the most; may be null). Say what `share` is from `share_basis`:
-     `"audience"` → the % of the audience in the cohorts it wins; `"cohorts"` → just
-     the fraction of cohorts it wins (no audience sizes were available). `share` can
+     `"audience"` → the % of subscribers in the cohorts it wins; `"cohorts"` → just
+     the fraction of cohorts it wins (no subscriber counts were available). `share` can
      be null — then leave it out.
    - **Best overall** — `best` is the winner with the highest average score across
      all cohorts: the pick if they send **one** image to everyone. It can differ from
      the first winner; say so when it does. `best` can be null.
    - **Images that won nothing** have **no order** — never rank them. For each scored
      image that isn't a winner (match on `image_url`: one picture sent under two links
-     is still one winner): if `close`, say "its best audience prefers *(the
-     `behind` image)*"; otherwise, or with no `behind`, "no audience picked this image
+     is still one winner): if `close`, say "its best demographic cohort prefers *(the
+     `behind` image)*"; otherwise, or with no `behind`, "no demographic cohort picked this image
      over the others". Never quote `behind_pct` as a number.
    Recommend `best` for a send to everyone (e.g. "#3 wins the most cohorts, but #1 is
    the best single image for everyone"), then confirm which image the user wants.
@@ -114,8 +114,8 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
    (`winners[].image_url` or `best.image_url`), drive the *user's own* connectors:
    - **Beefree MCP** → build/assemble the email around the chosen image.
    - **Cordial / Klaviyo MCP** → schedule the send. Send broadly: the scorer returns
-     no named segment to target (the demographic panel is a model descriptor, not a
-     Klaviyo segment). Send `best` unless the user picked another image.
+     no named segment to target (the demographic cohort is a model descriptor, not a
+     Klaviyo list or segment). Send `best` unless the user picked another image.
    These are **write** actions on the user's account → get explicit approval of
    what's being built/sent before calling them, same rule as any write.
    - If the user has **no** other MCP connected, stop at the recommendation and
@@ -125,14 +125,14 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 1. **`image_url` is the join key — that's why this composes.** Pass the winning
    URL straight to the other MCP; don't try to translate it into a Backstroke id.
    This portability is the whole reason the hand-off works today.
-2. **Two different "cohort"s.** The hero scorer's `top_cohort` is a
-   **demographic panel** (e.g. "female / 30-44 / south / medium"), *not* a named
-   Klaviyo segment from `list_cohorts`. Don't cross-reference them, and don't promise
+2. **Demographic cohorts are not audiences.** The hero scorer's `top_cohort` is a
+   **demographic cohort** (e.g. "female / 30-44 / south / medium"), not a Klaviyo list
+   or segment and not a Cluster. Don't cross-reference them, and don't promise
    the user a targetable segment — the hero tools return no named-segment pick.
 3. **`NO_COHORTS` ≠ "no audiences."** It's a data-sync state (subscribers not mapped
-   into panels), independent of whether the account has Klaviyo segments or whether
-   `predict_subject_lines_for_my_audience` works. Fall back to `score_hero_generic`
-   and say the result is global.
+   into demographic cohorts), independent of whether the account has Klaviyo segments or whether
+   per-Cluster subject lines work. Fall back to `score_hero_generic` and say the
+   result is global.
 4. **Filter `images[]` before scoring** — it includes logo/social/footer graphics;
    score only real heroes (use `alt`).
 5. **Pending is normal** on a cold run — poll `get_hero_scores`, don't treat it as
@@ -153,9 +153,9 @@ on a **portable `image_url`** — not a hidden internal id. Works today.
 1. Take the 4 image URLs (already just heroes here — no campaign to filter).
 2. `score_hero_for_my_audience({ image_urls:[4] })` → `status:"completed"`,
    `cohort_count: 5`, `share_basis:"audience"`. Winners: #3 wins 3 cohorts (62% of
-   the audience, strongest in "female / 30-44 / south / medium"); #1 wins 2 (38%).
-   `best` is #1. #2 and #4 won nothing: #2 is `close`, so "its best audience prefers
-   #3"; for #4, "no audience picked it over the others".
+   subscribers, strongest in "female / 30-44 / south / medium"); #1 wins 2 (38%).
+   `best` is #1. #2 and #4 won nothing: #2 is `close`, so "its best demographic cohort prefers
+   #3"; for #4, "no demographic cohort picked it over the others".
 3. Show the winners + best overall: "#3 wins the most cohorts, but #1 is the best
    single image for everyone" → user confirms #1.
 4. **[Beefree MCP]** assemble the email with image #1 → user approves the draft.

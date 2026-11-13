@@ -6,7 +6,7 @@ skill uses. Inlined so the skill runs without guessing.
 ## `score_hero_generic`
 - **Input:** `{ image_urls?: string[1–50] (public URLs), upload_id?: string }` — give
   `image_urls`, `upload_id`, or both (50 images in all).
-- **Scores against the GLOBAL demographic panel** — does NOT use the account's
+- **Scores against the GLOBAL demographic cohorts** — does NOT use the account's
   cohorts. (For the account's own audience, use `score_hero_for_my_audience`.)
 - **Output (completed):**
   ```
@@ -19,9 +19,9 @@ skill uses. Inlined so the skill runs without guessing.
                 retryable, behind?, behind_pct?, close? } ] }
   ```
 - **`winners[]`** is ordered: most cohorts won first, then total winning score. Don't
-  re-sort it. `top_cohort` is a demographic panel — e.g. "male / 45-60 / east /
+  re-sort it. `top_cohort` is a demographic cohort — e.g. "male / 45-60 / east /
   medium" — the one cohort that image wins by the most (may be null). It is a model
-  descriptor, not a Klaviyo segment.
+  descriptor, not a Klaviyo list or segment and not a Cluster.
 - **`share`** = `win_count / cohort_count`: `score_hero_generic` always returns
   `share_basis: "cohorts"`. Null → omit it.
 - **`best`** = the winner with the highest average score across all cohorts; the
@@ -30,8 +30,8 @@ skill uses. Inlined so the skill runs without guessing.
   `message` (tell the user; retry once only if `retryable`). Animated GIFs are
   refused (`animated_not_ranked`). A `scored` image that won nothing usually has
   `behind` (the `input_url` that beat it), `behind_pct`, `close`. **Images that won
-  nothing are NOT ordered.** Say "its best audience prefers *behind*" when `close`,
-  else (or with no `behind`) "no audience picked this image over the others". Never
+  nothing are NOT ordered.** Say "its best demographic cohort prefers *behind*" when `close`,
+  else (or with no `behind`) "no demographic cohort picked this image over the others". Never
   quote `behind_pct` as a number.
 - No per-cohort table is returned.
 - **Async:** may return `status:"pending"` + `run_id` on a cold run → poll
@@ -64,7 +64,7 @@ Treat `pending` as normal (a COLD run), not an error.
 
 ## Cross-skill note
 This skill is the zero-setup subset of `hero-winner-picker`. The difference is
-the scoring tool: `score_hero_generic` (global panel, here) vs.
+the scoring tool: `score_hero_generic` (global demographic cohorts, here) vs.
 `score_hero_for_my_audience` (the account's own audience, there — which can return
 `NO_COHORTS` if subscribers aren't synced). Same async contract, same output
-shape. Both report demographic **panels**, not Klaviyo segments.
+shape. Both report demographic **cohorts**, not Klaviyo lists or segments and not Clusters.

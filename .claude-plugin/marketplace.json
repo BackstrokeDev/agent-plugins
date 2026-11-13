@@ -4,13 +4,13 @@
     "name": "Backstroke"
   },
   "metadata": {
-    "description": "Official Backstroke plugins for Claude Code — predictive marketing tools (subject-line ranking, hero scoring) that chain into your ESP."
+    "description": "Official Backstroke plugins for Claude Code — predictive marketing tools (campaigns from one prompt, subject-line ranking, hero scoring) that chain into your ESP."
   },
   "plugins": [
     {
       "name": "backstroke",
       "source": "./backstroke",
-      "description": "Predict which subject line / hero image will win, then act on it with your ESP."
+      "description": "Make a campaign from one prompt, predict which subject line / hero image will win, then act on it with your ESP."
     }
   ]
 }

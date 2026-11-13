@@ -1,0 +1,75 @@
+name: release
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci --ignore-scripts
+      - run: npm test
+
+  live-catalog:
+    if: github.repository == 'BackstrokeDev/agent-plugins'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci --ignore-scripts
+      - run: npm run check:live
+
+  release:
+    if: github.repository == 'BackstrokeDev/agent-plugins' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, live-catalog]
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "20"
+      - run: npm ci --ignore-scripts
+      - name: Build the bundle
+        run: npm run bundle
+      - name: Release the bundle when the version is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(node -p "require('./backstroke/.claude-plugin/plugin.json').version")"
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            # A half-finished run: add a missing asset, and publish a draft a cancelled job left.
+            if ! gh release view "v$VERSION" --json assets --jq '.assets[].name' | grep -qx "skills-bundle.json"; then
+              gh release upload "v$VERSION" dist/skills-bundle.json
+            fi
+            if [ "$(gh release view "v$VERSION" --json isDraft --jq .isDraft)" = "true" ]; then
+              gh release edit "v$VERSION" --draft=false
+            fi
+            echo "v$VERSION is released with its bundle."
+            exit 0
+          fi
+          # The CHANGELOG section for this version, else a one-line note.
+          awk -v v="## $VERSION" '$0 == v {f=1; next} /^## /{f=0} f' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "Backstroke skills v$VERSION" > notes.md; fi
+          gh release create "v$VERSION" --target "$GITHUB_SHA" dist/skills-bundle.json --title "v$VERSION" --notes-file notes.md

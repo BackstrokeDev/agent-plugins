@@ -41,6 +41,8 @@ respond.
 ## What's next
 
 Run the **`backstroke`** skill — the entry point. It picks the right recipe:
+- **`create-campaign`** — a campaign from one prompt: brief, build, subject lines,
+  push to Klaviyo and schedule.
 - **`subject-line-ab-optimizer`** — stronger per-audience subject lines for a
   Klaviyo campaign, set up as A/B variants (with your approval before anything is
   written).
@@ -48,7 +50,7 @@ Run the **`backstroke`** skill — the entry point. It picks the right recipe:
 
 ## The one thing to know
 
-Backstroke **predicts**; it doesn't send. Any step that writes to your marketing
-account (creating Klaviyo variants, or handing off to another tool's send)
+Backstroke **predicts**, and it can also build, push and schedule a campaign. Any step that writes to your marketing account (making a campaign,
+creating Klaviyo variants, scheduling a send, or handing off to another tool's send)
 happens **only after you approve the exact content**. Predict freely — nothing
 ships silently.

@@ -9,10 +9,35 @@ invisible until someone names it).
 - **Predictive hero A/B test** — prove it: A/B test the per-cohort predictive hero
   (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
-- **Predictive heroes** — *generate* the hero image(s) most likely to win for a
-  campaign, instead of only ranking the ones you already have. A whole new move:
-  "make me a winning hero for this campaign." Recipe lands when the
-  `generate_predictive_heroes` tool ships.
+
+## 0.4.0
+- **Make a campaign from one prompt** — describe the email, the products and the
+  audience. Backstroke picks products from your catalog, writes the brief and the hero
+  copy, builds the email, and makes Backstroke hero options and Backstroke predictive
+  subject lines without stopping to ask (on a brand with predictive heroes, each cohort
+  gets the hero it is predicted to click). It asks you only for the audience, the hero
+  link and your own hero image, in one message, and ends with one recap you can change.
+  The push to Klaviyo and the schedule each wait for your yes to a preview; scheduling
+  needs a yes to the exact send time and audiences. Run the new `create-campaign` recipe.
+- **One subject-line tool** — `generate_subject_lines` writes ideas for a Backstroke
+  campaign or for any email you paste, in your saved brand voice.
+- **You choose where the hero links** — you are asked which page the hero image
+  opens when clicked. Backstroke never guesses it.
+- **Find a campaign by its name** — ask for a campaign's status by its name; no id
+  needed.
+- **Clear names for your groups** — the subject-line recipe calls your Backstroke
+  groups **Clusters**, as the app does, and says they are not Klaviyo audiences. To
+  pick an audience, Backstroke shows your Klaviyo list and segment names.
+- **Set up on a claude.ai Team plan** — the `setup` steps now show how an Owner adds
+  the connector and how each member connects to it.
+- Reconnect once to approve two new permissions: making campaigns, and scheduling
+  them to send.
+
+## 0.3.0
+- **See the push before it happens** — the subject-line push shows you exactly
+  what it will write to Klaviyo, including that your original campaign is unscheduled
+  once every variant lands, and writes only after you say yes. A retry after a timeout
+  is safe: it never creates the variants twice.
 
 ## 0.2.0
 - **Hero winners, not a leaderboard** — the hero skills now name the images that win

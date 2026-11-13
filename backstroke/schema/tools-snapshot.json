@@ -1,17 +1,9 @@
 {
-  "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was actually observed — absent means not yet verified, not empty.",
+  "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was observed, or whose source contract verifiedAgainst names — absent means not yet verified, not empty. `dailyLimit` is the default per-brand limit (an account can differ).",
   "endpoint": "https://mcp.backstroke.com/mcp",
-  "verifiedAgainst": "prod, 2026-08-11 (hero tools and request_image_upload: the v2 contract from source, before its prod deploy; re-verify against prod after it ships)",
-  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request"],
+  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
+  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find"],
   "tools": {
-    "predict_subject_lines": {
-      "required": [],
-      "params": ["email_html", "email_text", "rendered_image_url", "controls", "brand_context", "campaign_id", "klaviyo_campaign_id"]
-    },
-    "predict_subject_lines_for_my_audience": {
-      "required": ["segment_id"],
-      "params": ["segment_id", "email_html", "email_text", "rendered_image_url", "controls", "brand_context", "campaign_id", "klaviyo_campaign_id"]
-    },
     "score_hero_generic": {
       "required": [],
       "params": ["image_urls", "upload_id"],
@@ -32,10 +24,15 @@
       "params": [],
       "outputFields": ["upload_id", "upload_url", "curl_command", "max_files", "max_bytes", "expires_at"]
     },
-    "list_cohorts": {
+    "list_clusters": {
       "required": [],
       "params": [],
-      "outputFields": ["id", "name", "description", "targetable", "klaviyo_segment_id"]
+      "outputFields": ["clusters", "id", "name", "description", "targetable", "klaviyo_list_id"]
+    },
+    "list_audiences": {
+      "required": [],
+      "params": [],
+      "outputFields": ["audiences", "id", "name", "type", "used_in_campaigns", "total"]
     },
     "list_klaviyo_campaigns": {
       "required": [],
@@ -47,10 +44,6 @@
       "params": ["campaign_id", "format"],
       "outputFields": ["klaviyo_campaign_id", "klaviyo_message_id", "name", "status", "send_time", "scheduled_at", "included_audiences", "excluded_audiences", "editor_type", "subject", "preview_text", "images", "links", "body_text", "body_text_truncated", "content_provenance"]
     },
-    "push_subject_lines_to_klaviyo": {
-      "required": [],
-      "params": ["campaign_id", "selections", "klaviyo_campaign_id", "subject", "preheader"]
-    },
     "list_accounts": {
       "required": [],
       "params": [],
@@ -59,9 +52,71 @@
     "switch_account": {
       "required": ["account"],
       "params": ["account"]
+    },
+    "get_brand_config": {
+      "required": [],
+      "params": [],
+      "outputFields": ["configured", "version_number", "logo_url", "colors", "fonts", "custom_instructions", "hero_guidelines", "subject_line_voice", "summary"],
+      "refusals": ["invalid_request"]
+    },
+    "push_subject_lines": {
+      "required": ["mode"],
+      "params": ["mode", "campaign_id", "selected_subjects", "klaviyo_campaign_id", "subject", "preheader", "fingerprint"],
+      "outputFields": ["outcome", "campaigns_created", "campaigns_total", "campaigns", "failed", "original_unscheduled", "orphan_drafts", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "push_failed", "not_editable", "update_failed", "stale_preview", "apply_in_progress", "apply_interrupted"]
+    },
+    "create_campaign": {
+      "required": [],
+      "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "fingerprint"],
+      "outputFields": ["campaign_id", "name", "status", "build_started", "build_skipped_reason", "products_added", "failed_urls", "app_url", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "stale_preview", "apply_in_progress", "apply_interrupted"],
+      "dailyLimit": 20
+    },
+    "find_products": {
+      "required": [],
+      "params": ["query", "on_sale", "in_stock", "limit"],
+      "outputFields": ["total_matched", "products"],
+      "refusals": [],
+      "untrustedFields": ["products"]
+    },
+    "generate_hero_images": {
+      "required": ["campaign_id"],
+      "params": ["campaign_id", "source_image_url", "styles", "method"],
+      "outputFields": ["status", "campaign_id", "method", "styles", "estimate"],
+      "refusals": ["invalid_request", "not_found", "already_pushed", "already_generating_heroes", "no_source_image"],
+      "dailyLimit": 20
+    },
+    "get_campaign_status": {
+      "required": [],
+      "params": ["campaign_id", "name", "wait_seconds"],
+      "outputFields": ["campaign_id", "name", "status", "step", "error_message", "error_count", "subject_line_options", "products", "klaviyo_campaigns", "hero_routing", "hero_images", "hero_copy", "send_time", "running", "next_check", "app_url", "summary"],
+      "refusals": ["not_found", "invalid_request", "ambiguous_name"],
+      "untrustedFields": ["subject_line_options", "products"]
+    },
+    "generate_subject_lines": {
+      "required": [],
+      "params": ["campaign_id", "email_html", "email_text", "rendered_image_url", "cluster_id", "brand_context", "count", "tone"],
+      "outputFields": ["status", "campaign_id", "subject_line_options", "content_source", "summary"],
+      "refusals": ["invalid_request", "invalid_cluster", "not_found", "unsupported_audience_mode", "not_built", "already_generating_subjects", "already_pushed", "lists_segments_disabled", "no_audience", "start_failed", "vision_failed", "generation_failed"],
+      "dailyLimit": 40,
+      "untrustedFields": ["subject_line_options"]
+    },
+    "push_campaign_to_klaviyo": {
+      "required": ["campaign_id", "selected_subjects"],
+      "params": ["campaign_id", "selected_subjects", "fingerprint"],
+      "outputFields": ["campaign_id", "status", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "not_built", "no_audience", "in_progress", "already_pushed", "already_scheduled", "no_audience_left", "klaviyo_disconnected", "unavailable_audiences", "audience_unverified", "campaign_discarded", "push_enqueue_failed", "rate_limited", "stale_preview", "apply_in_progress", "apply_interrupted"]
+    },
+    "schedule_campaign": {
+      "required": ["campaign_id"],
+      "params": ["campaign_id", "date", "time", "timezone", "send_now", "smart_sending", "fingerprint"],
+      "outputFields": ["campaign_id", "status", "send_time", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "unclear_send_time", "invalid_send_time", "send_time_parse_error", "send_time_in_past", "in_progress", "already_scheduled", "not_pushed", "klaviyo_disconnected", "audience_unavailable", "audience_unverified", "stale_preview", "apply_in_progress", "apply_interrupted"]
     }
   },
-  "retiredNames": {},
+  "retiredNames": {
+    "list_cohorts": "list_clusters"
+  },
   "retiredFields": {
     "ranked": "(removed: use winners, then best)",
     "per_cohort": "(removed: the per-cohort table is no longer returned)",
