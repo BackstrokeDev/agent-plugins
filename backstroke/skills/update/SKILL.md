@@ -1,4 +1,5 @@
 ---
+hosts: [claude-plugin]
 name: update
 description: >-
   Keep Backstroke up to date, and surface what's newly possible. Use when the user
@@ -7,7 +8,8 @@ description: >-
   still in sync with the live Backstroke MCP; or to see what's new. Reports what's
   current, updates the plugin if behind (Claude Code) or the config (Claude Desktop),
   and announces new capabilities in plain English.
-allowed-tools: Bash
+allowed-tools:
+  - Bash
 ---
 
 # Keeping Backstroke up to date
@@ -94,8 +96,7 @@ shipped" into "a marketer actually adopts it."
 
 After updating, read `CHANGELOG.md` and present the entries newer than the version
 that *was* installed, **in plain English** — pair each with what it does for the
-marketer, and give a starter prompt. Not "v0.2 adds `generate_predictive_heroes`",
-but:
+marketer, and give a starter prompt. Not "v0.2 adds a predictive-heroes tool", but:
 
 > **New — Predictive heroes:** generate the hero image(s) most likely to win for a
 > campaign, not just rank the ones you already have. Try: *"make me a winning hero
@@ -117,6 +118,6 @@ cat "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json"    # version bumped?
 **Claude Desktop** — confirm the plugin shows the new version under Customize →
 Plugins, and that the server is connected, after the full quit + reopen.
 
-Either way, run a harmless read call (e.g. `list_cohorts`) to confirm the MCP still
+Either way, run a harmless read call (e.g. `list_clusters`) to confirm the MCP still
 answers, and that any newly-added tools now appear. If a tool call still misbehaves after
 updating, the server may be mid-change — retry shortly, or report it to Backstroke.

@@ -1,12 +1,17 @@
 {
   "name": "backstroke-agent-plugins",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "private": true,
   "license": "UNLICENSED",
   "description": "Backstroke plugin for Claude Code — predictive marketing skills that chain into your ESP.",
   "type": "module",
   "scripts": {
     "check": "node scripts/check-schema-drift.mjs",
-    "test": "node scripts/check-schema-drift.mjs"
+    "bundle": "node scripts/build-skills-bundle.mjs",
+    "check:live": "node scripts/check-live-catalog.mjs",
+    "test": "node scripts/check-schema-drift.mjs && node --test scripts/__tests__"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.1"
   }
 }

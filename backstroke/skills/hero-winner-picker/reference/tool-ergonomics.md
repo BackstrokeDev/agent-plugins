@@ -19,7 +19,7 @@ skill chains. Inlined so the skill runs without guessing.
 - **Input:** `{ image_urls?: string[1–50] (public), upload_id?: string }` — give
   `image_urls`, `upload_id`, or both (50 images in all). `upload_id` comes from
   `request_image_upload` (see below).
-- **Scores the account's audience distributed across demographic panels** — the
+- **Scores the account's audience distributed across the account's demographic cohorts** — the
   audience-tailored answer. Each cohort has one winning image.
 - **Output (completed):**
   ```
@@ -33,9 +33,9 @@ skill chains. Inlined so the skill runs without guessing.
   ```
 - **`winners[]`** — ordered: most cohorts won first, then total winning score. Don't
   re-sort it. `win_count` = cohorts it wins; `top_cohort` = the one cohort it wins by
-  the most (a **demographic panel** label like "male / 45-60 / east / medium", **not**
-  a named Klaviyo segment from `list_cohorts`; may be null).
-- **`share`** — by `share_basis`: `"audience"` = the part of the audience in the
+  the most (a **demographic cohort** label like "male / 45-60 / east / medium", **not**
+  a Klaviyo list or segment and not a Cluster; may be null).
+- **`share`** — by `share_basis`: `"audience"` = the % of subscribers in the
   cohorts it wins; `"cohorts"` = `win_count / cohort_count`. Null when no cohort it
   wins has a subscriber count; then omit it.
 - **`best`** — the winner with the highest average score across all cohorts; the
@@ -44,21 +44,21 @@ skill chains. Inlined so the skill runs without guessing.
   carry `code` + `message` (tell the user; retry once only if `retryable`). Animated
   GIFs are refused (`animated_not_ranked`). A `scored` image that won nothing usually has
   `behind` (the `input_url` that beat it), `behind_pct`, `close`. **Images that won
-  nothing are NOT ordered** — never rank them. Say "its best audience prefers
-  *behind*" when `close`, else (or with no `behind`) "no audience picked this image
+  nothing are NOT ordered** — never rank them. Say "its best demographic cohort prefers
+  *behind*" when `close`, else (or with no `behind`) "no demographic cohort picked this image
   over the others".
   Never quote `behind_pct` as a number.
 - **No per-cohort table and no named-segment pick** are returned. Don't promise either.
 - **`NO_COHORTS`** does **not** mean "no audiences." It's a data-sync state: the
-  account's subscribers aren't mapped into panels yet. It can fire even when
-  `list_cohorts` returns many cohorts and `predict_subject_lines_for_my_audience`
-  works. Fall back to `score_hero_generic` or `image-face-off`.
+  account's subscribers aren't mapped into demographic cohorts yet. It can fire even when
+  `list_clusters` returns many Clusters and per-Cluster subject lines work. Fall back
+  to `score_hero_generic` or `image-face-off`.
 - **Async:** may return `status:"pending"` + `run_id` → poll `get_hero_scores`.
 - Read-only.
 
 ## `score_hero_generic`  (fallback)
-- Same input and output shape. Scores against the **global** panel (no cohorts
-  needed). Use when `score_hero_for_my_audience` returns `NO_COHORTS`, and say the
+- Same input and output shape. Scores against the **global** demographic cohorts (no account
+  cohorts needed). Use when `score_hero_for_my_audience` returns `NO_COHORTS`, and say the
   result is global, not audience-tailored.
 
 ## `get_hero_scores`
@@ -94,6 +94,6 @@ score_hero_* → "completed" → use winners / best / images
   them at runtime; don't assume a fixed signature.
 - Downstream build/send actions are **writes** → human-approve before calling.
 - The Klaviyo round-trip (`subject-line-ab-optimizer`) now composes outward too —
-  `klaviyo_campaign_id`, `klaviyo_message_id`, and `klaviyo_segment_id` are all
-  exposed, so campaigns and segments can be handed to a customer's own Klaviyo MCP.
+  `klaviyo_campaign_id`, `klaviyo_message_id`, and `klaviyo_list_id` are all
+  exposed, so campaigns and lists can be handed to a customer's own Klaviyo MCP.
   Hero scoring composes on `image_url`; the Klaviyo tools compose on Klaviyo ids.

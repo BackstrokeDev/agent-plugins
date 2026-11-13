@@ -3,7 +3,7 @@ name: image-face-off
 description: >-
   Use when a marketer has a few candidate hero/creative images and just wants a
   fast "which one is stronger?" — zero account setup, no ESP, no write. Scores
-  the images against Backstroke's global demographic panel and returns the
+  the images against Backstroke's global demographic cohorts and returns the
   winners (most cohorts won first), the best overall image, and the demographic
   each winner is strongest with. For a result tailored to the user's OWN
   audience, use hero-winner-picker instead.
@@ -36,7 +36,7 @@ value in one tool call.
 |------|------|---------|
 | 1 | *(collect image URLs)* | From the user, or a page/campaign they point to. |
 | 1 | `request_image_upload` *(optional)* | Upload link for image files the user has instead of links. |
-| 2 | `score_hero_generic` | Score the images against the global demographic panel. |
+| 2 | `score_hero_generic` | Score the images against the global demographic cohorts. |
 | 2a | `get_hero_scores` | Poll if step 2 returns `status:"pending"`. |
 
 ## Exact sequence
@@ -51,7 +51,7 @@ value in one tool call.
    `upload_id` in step 2. (`image_urls` and `upload_id` can be combined, 50 in all.)
 
 2. **Score.** Call `score_hero_generic` with `image_urls: [...]` and/or `upload_id`.
-   Each cohort in the panel gets one winning image, so you get a set of winners, not
+   Each global demographic cohort gets one winning image, so you get a set of winners, not
    a leaderboard.
 
 3. **Handle the async path.** If the result's `status` is `"pending"`, it returns
@@ -79,14 +79,14 @@ value in one tool call.
      first winner; say so.
    - **Images that won nothing** have no order — never rank them. For each scored
      image that isn't a winner (match on `image_url`: one picture sent under two links
-     is still one winner): if `close`, "its best audience prefers *(the `behind`
-     image)*"; otherwise, or with no `behind`, "no audience picked this image over the
+     is still one winner): if `close`, "its best demographic cohort prefers *(the `behind`
+     image)*"; otherwise, or with no `behind`, "no demographic cohort picked this image over the
      others". Never quote `behind_pct` as a number.
    This is a read-only opinion; there's nothing to approve or send.
 
 ## Traps
-1. **Global panel, not the user's audience.** These scores are against a *generic*
-   demographic panel — they answer "which is broadly stronger," not "which wins
+1. **Global cohorts, not the user's audience.** These scores are against *generic*
+   demographic cohorts — they answer "which is broadly stronger," not "which wins
    for *my* list." If the user cares about their audience, switch to
    `hero-winner-picker`. Say which one you ran.
 2. **URLs must be public.** A signed/expiring or auth-gated image URL will fail to
@@ -106,7 +106,7 @@ value in one tool call.
 2. `score_hero_generic({ image_urls: [4 urls] })` → `status:"completed"`.
 3. Report: "#2 wins 4 of 6 cohorts, strongest with **women 25–34**; #4 wins the other 2.
    #2 is also the best overall — the one to send everyone. #1 and #3 won nothing:
-   #1's best audience prefers #2; no audience picked #3 over the others." Offer:
+   #1's best demographic cohort prefers #2; no demographic cohort picked #3 over the others." Offer:
    "Want this scored against *your* audience instead? → hero-winner-picker."
 
 ## Hand-offs

@@ -45,8 +45,9 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseAllowedTools, parseHosts } from "./lib/frontmatter.mjs";
 
-const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = process.argv[2] ?? join(dirname(fileURLToPath(import.meta.url)), "..");
 const snapPath = join(repoRoot, "backstroke", "schema", "tools-snapshot.json");
 const skillsDir = join(repoRoot, "backstroke", "skills");
 
@@ -55,6 +56,8 @@ const toolNames = new Set(Object.keys(snap.tools));
 const verbPrefixes = snap.verbPrefixes ?? [];
 const retired = snap.retiredNames ?? {};
 const retiredFields = snap.retiredFields ?? {};
+// A known param, output field or refusal code (e.g. `subject_line_options`, `push_failed`) is not a tool call.
+const knownFields = new Set(Object.values(snap.tools).flatMap((t) => [...(t.params ?? []), ...(t.outputFields ?? []), ...(t.refusals ?? [])]));
 const errors = [];
 
 // Walk every .md under skills/
@@ -66,18 +69,6 @@ function walk(dir) {
     else if (name.endsWith(".md")) out.push(p);
   }
   return out;
-}
-
-// Parse the `allowed-tools:` block from a SKILL.md frontmatter (simple list form).
-function parseAllowedTools(text) {
-  // List items are indented with a dash + space (`  - tool_name`); the frontmatter
-  // delimiter `---` is not, so require leading whitespace + a space after the dash.
-  const m = text.match(/^allowed-tools:[ \t]*\n((?:[ \t]+-[ \t]+\S.*\n?)+)/m);
-  if (!m) return [];
-  return m[1]
-    .split("\n")
-    .map((l) => l.match(/^[ \t]+-[ \t]+(.+?)\s*$/)?.[1])
-    .filter(Boolean);
 }
 
 // Also scan the repo-root prose docs — they name tools in prose too (Checks B/C).
@@ -99,7 +90,10 @@ for (const file of files) {
   const text = readFileSync(file, "utf8");
 
   // --- Check A: allowed-tools must exist in the snapshot ---
-  if (file.endsWith("SKILL.md")) {
+  // A claude-plugin-only skill is never published and may list Claude Code tools (Read, Bash).
+  const hosts = parseHosts(text);
+  const pluginOnly = hosts !== null && !hosts.includes("all");
+  if (file.endsWith("SKILL.md") && !pluginOnly) {
     for (const t of parseAllowedTools(text)) {
       if (!toolNames.has(t)) {
         errors.push(`${rel}: allowed-tools lists "${t}" — not in the MCP tool snapshot.`);
@@ -114,7 +108,7 @@ for (const file of files) {
       errors.push(`${rel}: references retired tool "${tok}" — renamed to "${retired[tok]}".`);
       continue;
     }
-    const looksLikeTool = tok.includes("_") && verbPrefixes.includes(tok.split("_")[0]);
+    const looksLikeTool = tok.includes("_") && verbPrefixes.includes(tok.split("_")[0]) && !knownFields.has(tok);
     if (looksLikeTool && !toolNames.has(tok)) {
       errors.push(`${rel}: "\`${tok}\`" looks like a tool call but is not a known MCP tool (typo or drift?).`);
     }

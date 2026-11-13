@@ -1,11 +1,13 @@
 ---
+hosts: [claude-plugin]
 name: setup
 description: >-
   Set up the Backstroke MCP connection in Claude Code, Claude Desktop, or claude.ai —
   add the remote server (it self-registers via dynamic client registration), complete
   the OAuth sign-in/consent, and verify the tools work. Run this first, before any
   other Backstroke skill, or when Backstroke tool calls return 401 / "not connected".
-allowed-tools: Read
+allowed-tools:
+  - Read
 ---
 
 # Set up Backstroke
@@ -21,9 +23,9 @@ gives you the guided **recipes** *and* the connection; a plain **custom connecto
 (claude.ai web, or any MCP client) gives you the **tools** only.
 
 ## Before you start
-- **A Backstroke account enabled for the MCP connector** — your account needs the
-  `headless_mcp` flag. If it's not enabled you'll see "This account is not enabled
-  for the Backstroke MCP connector" — ping an admin.
+- **A Backstroke account enabled for the MCP connector.** If it's not enabled, a message
+  says the account or brand isn't enabled for the Backstroke MCP connector — ask
+  Backstroke to enable it.
 
 (No Node.js or `npx` required anymore — the server is reached over native HTTP.)
 
@@ -58,13 +60,27 @@ closing the window isn't enough) and reopen. The first Backstroke tool call open
 login + consent page.
 
 ### claude.ai (web) or any MCP client — custom connector (tools only)
-**Settings → Connectors → Add custom connector**, paste:
+The URL is:
 
 ```
 https://mcp.backstroke.com/mcp
 ```
 
-and follow the sign-in. This connects the Backstroke **tools**; for the guided
+On claude.ai, the add dialog asks three things. Name it **Backstroke**, choose **Sign
+in when needed**, and choose **Register automatically**. ("Use Claude's published
+identity" fails against Backstroke, and "No sign in" makes every tool call fail.)
+
+- **claude.ai Pro / Max:** **Customize → Connectors → + Add → Add custom connector**,
+  paste the URL, answer the dialog as above, and follow the sign-in.
+- **claude.ai Team / Enterprise:** members can't add custom connectors. An Owner (or
+  Primary Owner) adds it once for everyone: **Organization settings → Connectors → Add
+  → Custom → Web**, with the URL, and answers the dialog as above. Then each member opens
+  **Customize → Connectors**, finds Backstroke (marked "Custom"), and clicks **Connect**
+  to sign in. Don't see it? Ask your Owner to add it: send them the URL and these steps.
+  In a chat, turn it on under **+ → Connectors** if its tools don't show.
+- **Any other MCP client:** add the URL as a remote MCP server and follow the sign-in.
+
+This connects the Backstroke **tools**; for the guided
 recipes, install the plugin in Claude Code or Desktop above.
 
 ## 2. Authorize (OAuth)
@@ -76,14 +92,29 @@ page at `app.backstroke.com` — sign in with your account and approve.
 - **No keys, no client id to paste.** The server supports dynamic client
   registration, so your client registers itself automatically as a public OAuth
   client and logs you in as yourself — you only ever see your own data.
-- **What you're granting.** The consent screen asks for two scopes:
-  `subject_lines:generate` (the read-only prediction tools) and `klaviyo:write`.
-  The write scope is used **only** by the subject-line push
-  (`push_subject_lines_to_klaviyo`), which always shows you the exact lines and
-  asks before writing — nothing is pushed to Klaviyo silently.
+- **What you're granting.** There are four scopes:
+  - `subject_lines:generate` — lets your agent read your Backstroke data and make
+    predictions. Nothing changes in Klaviyo.
+  - `klaviyo:write` — lets your agent write a draft campaign or subject lines to Klaviyo,
+    only after you approve that preview: `push_subject_lines`, `push_campaign_to_klaviyo`.
+  - `campaigns:write` — lets your agent make and change campaign drafts in Backstroke:
+    `create_campaign`.
+  - `klaviyo:send` — lets your agent schedule a real send to your Klaviyo audiences, only
+    after you approve that send's preview: `schedule_campaign`.
+
+  A draft in Backstroke builds without a yes. The push to Klaviyo and the schedule
+  each show you a preview first and run only after you say yes. If a write tool asks
+  you to sign in again, it needs a scope your first consent didn't grant — approve it
+  on the consent page.
+
+### Image files (optional)
+The hero tools can score image **files** through `request_image_upload`. The fast path
+runs `curl` from Claude, so it needs code execution turned on and the Backstroke API
+host (`api.backstroke.com`) on the allowed domains list in your Claude settings.
+Without that, the tool gives you an `upload_url` to open in the browser instead.
 
 ## 3. Verify
-Run a harmless read-only call, e.g. **`list_cohorts`** or `list_klaviyo_campaigns`. A
+Run a harmless read-only call, e.g. **`list_clusters`** or `list_klaviyo_campaigns`. A
 successful list = you're connected and scoped to an account. A 401 / "not connected"
 → see Troubleshooting.
 
@@ -102,10 +133,12 @@ Run the **`backstroke`** skill — it's the entry point that picks the right rec
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| "This account is not enabled for the Backstroke MCP connector" | Account missing the `headless_mcp` flag | Ask an admin to enable it for your account. |
+| A message that the account or brand isn't enabled for the Backstroke MCP connector | The account or brand isn't enabled for the connector | Ask Backstroke to enable it; if you have other brands, `switch_account` to an enabled one. |
+| A daily limit message on `create_campaign` or `generate_subject_lines` | The brand reached that tool's daily limit | Wait until the time the message names; previews don't count. |
+| `curl` to the upload host fails or can't connect | Code execution is off, or the host isn't on the allowed domains list | Use the `upload_url` in the browser, or add the host in your Claude settings. |
 | A tool call returns `ENTITLEMENT_DENIED` | Connect + auth worked, but your account isn't entitled to that specific tool/feature | Ask an admin to enable that tool for your account; other tools keep working. |
 | Backstroke tools don't appear after install | Agent not restarted; server registers at startup | Restart the agent (fully quit + reopen on Desktop), then retry. |
 | Every tool call returns **401** / "not connected" | OAuth not completed / token expired | Re-run the auth flow; finish the browser consent at `app.backstroke.com`. |
-| claude.ai / Desktop won't add the connector | Added as the wrong kind of connector, or the URL is missing the `/mcp` path | Add it under **Connectors → custom connector** using the full URL `https://mcp.backstroke.com/mcp`. |
-| Subject-line generation hangs / times out | Known — generation is slow; the client's tool-call timeout fires | Retry; other tools (campaigns, cohorts) return quickly. In Claude Code you can raise the ceiling with the `MCP_TOOL_TIMEOUT` env var (ms). |
+| claude.ai / Desktop won't add the connector | Added as the wrong kind of connector, or the URL is missing the `/mcp` path | Add it as a custom connector using the full URL `https://mcp.backstroke.com/mcp`. On a Team / Enterprise plan, only an Owner can add it (Organization settings → Connectors); members then click **Connect** under Customize → Connectors. |
+| Subject-line generation hangs / times out | Known — generation is slow; the client's tool-call timeout fires | Retry; other tools (campaigns, Clusters) return quickly. In Claude Code you can raise the ceiling with the `MCP_TOOL_TIMEOUT` env var (ms). |
 | `UPSTREAM_ERROR` "temporarily unavailable" on a data tool | A transient upstream/backend hiccup | Retry. If it persists it's not a local setup problem — check Backstroke status or ping support. |
