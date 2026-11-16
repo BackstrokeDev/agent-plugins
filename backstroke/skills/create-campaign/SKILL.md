@@ -81,8 +81,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    finished heroes: the build waits for the options. Skip it only
    when the person asked for only their own images or one hero for everyone. Backstroke
    draws the campaign's `hero_copy` on each option, and on each photo, so set it before
-   this call. Heroes the email uses (the main hero and `alternate_hero_image_urls`) are
-   saved to the person's Hero Lab library; options never used are not. Check
+   this call. The heroes the email sends are saved to the person's Hero Lab library;
+   options never used are not. Check
    `get_campaign_status` as its text says until `hero_images` are ready, then follow
    its next step. On a predictive brand, Backstroke sends each demographic cohort the hero it
    predicts that demographic cohort will click, from the options and the person's heroes. About
@@ -108,8 +108,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    `campaign_id` and only the fields that change; `build: true` replaces the built
    email, with any edits made in the builder. When `hero_copy` changes, the options
    still show the old copy: call `generate_hero_images` with the `campaign_id`, the
-   `run_id` as `from_run_id` and the new `hero_copy`. It draws the new copy on the same
-   images, makes no new images and is free. Never ask the person for new images for a
+   newest `run_id` as `from_run_id` and the new `hero_copy`. It draws the new copy on the
+   same images, makes no new images and is free; keep the new `run_id` it returns. Never ask the person for new images for a
    copy change. Build when the options are ready.
 
 7. **Backstroke predictive subject lines.** Call `generate_subject_lines` with the
