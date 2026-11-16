@@ -1,7 +1,7 @@
 {
   "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was observed, or whose source contract verifiedAgainst names — absent means not yet verified, not empty. `dailyLimit` is the default per-brand limit (an account can differ).",
   "endpoint": "https://mcp.backstroke.com/mcp",
-  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
+  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. generate_hero_images and get_campaign_status follow the BAC-3418 source and are not yet deployed. read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
   "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find"],
   "tools": {
     "score_hero_generic": {
@@ -80,18 +80,18 @@
       "untrustedFields": ["products"]
     },
     "generate_hero_images": {
-      "required": ["campaign_id"],
-      "params": ["campaign_id", "source_image_url", "styles", "count", "method"],
-      "outputFields": ["status", "campaign_id", "method", "styles", "estimate"],
-      "refusals": ["invalid_request", "not_found", "already_pushed", "already_generating_heroes", "no_source_image"],
+      "required": [],
+      "params": ["campaign_id", "description", "product_images", "source_image_url", "base_image_urls", "upload_ids", "hero_copy", "from_run_id", "styles", "count", "method"],
+      "outputFields": ["status", "run_id", "campaign_id", "method", "styles", "estimate", "next_check", "summary"],
+      "refusals": ["invalid_request", "not_found", "already_pushed", "already_generating_heroes", "no_source"],
       "dailyLimit": 20
     },
     "get_campaign_status": {
       "required": [],
-      "params": ["campaign_id", "name", "wait_seconds"],
-      "outputFields": ["campaign_id", "name", "status", "step", "error_message", "error_count", "subject_line_options", "products", "klaviyo_campaigns", "hero_routing", "hero_images", "hero_copy", "send_time", "running", "next_check", "app_url", "summary"],
+      "params": ["campaign_id", "run_id", "name", "wait_seconds"],
+      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "send_time", "running", "next_check", "app_url", "summary"],
       "refusals": ["not_found", "invalid_request", "ambiguous_name"],
-      "untrustedFields": ["subject_line_options", "products"]
+      "untrustedFields": ["subject_line_options", "products", "saved_rows"]
     },
     "generate_subject_lines": {
       "required": [],

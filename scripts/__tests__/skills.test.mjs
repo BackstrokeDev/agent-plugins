@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { writeFileSync, mkdtempSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdtempSync, mkdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -137,4 +137,22 @@ test("drift check: a quoted block item all still counts as published", () => {
 test("drift check: a hosts line in the skill body does not make a published skill plugin-only", () => {
   // No hosts key means published to all; only the body names claude-plugin.
   assert.equal(driftCheck("", "Read", "Example:\nhosts: [claude-plugin]").status, 1);
+});
+
+test("snapshot: the hero tools carry the composed hero options contract (BAC-3418)", () => {
+  const { tools } = JSON.parse(readFileSync(join(root, "backstroke", "schema", "tools-snapshot.json"), "utf8"));
+  const gen = tools.generate_hero_images;
+  for (const p of ["description", "base_image_urls", "upload_ids", "hero_copy", "from_run_id", "count"]) assert.ok(gen.params.includes(p), `generate_hero_images param ${p}`);
+  assert.deepEqual(gen.required, []);
+  assert.ok(gen.outputFields.includes("run_id"));
+  assert.ok(gen.refusals.includes("no_source") && !gen.refusals.includes("no_source_image"));
+  const status = tools.get_campaign_status;
+  assert.ok(status.params.includes("run_id"));
+  assert.ok(status.outputFields.includes("run_id"));
+  assert.ok(status.untrustedFields.includes("saved_rows"));
+});
+
+test("create-campaign skill names the run_id and from_run_id hero flows (BAC-3418)", () => {
+  const text = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8");
+  for (const token of ["from_run_id", "run_id", "base_image_urls", "description"]) assert.ok(text.includes("`" + token + "`"), token);
 });

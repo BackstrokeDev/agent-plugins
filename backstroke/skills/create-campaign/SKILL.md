@@ -62,8 +62,12 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 
 4. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls`,
    `hero_copy` and any `audiences`, `hero_link_url` and `hero_image_url` the person
-   gave. When their hero is a file, call `request_image_upload`, give them the link,
-   and pass the `upload_id` it returns instead of `hero_image_url`. To suggest audiences, call `list_audiences` (Klaviyo lists and segments, most used first) and
+   gave. When the person gives an image, ask once: is it a finished hero (the copy
+   already on it) or a photo? A finished hero is `hero_image_url`, used as it is. A
+   photo is a base for `generate_hero_images` (step 5), which draws the copy on it. When
+   the image is a file, call `request_image_upload`, give them the link, and pass the
+   `upload_id` it returns: as `upload_id` for a finished hero, in `upload_ids` for a
+   photo. To suggest audiences, call `list_audiences` (Klaviyo lists and segments, most used first) and
    let the person confirm or change them in one reply; they may pick more than one.
    When `create_campaign` refuses for audiences, use the names it gives. For the hero
    link, suggest a page ("Link the hero to [the featured product page], or another
@@ -71,10 +75,14 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    products and the brief. Then apply.
 
 5. **Backstroke hero options, on every campaign.** Right after the apply, call
-   `generate_hero_images` with the `campaign_id`. Do not ask, and do it even when
-   the person gave their own heroes: the build waits for the options. Skip it only
+   `generate_hero_images` with the `campaign_id`, the brief as `description`, and any
+   photos the person gave as bases (`base_image_urls`, or `upload_ids`). Keep the
+   `run_id` it returns. Do not ask, and do it even when the person gave their own
+   finished heroes: the build waits for the options. Skip it only
    when the person asked for only their own images or one hero for everyone. Backstroke
-   draws the campaign's `hero_copy` on each option, so set it before this call. Check
+   draws the campaign's `hero_copy` on each option, and on each photo, so set it before
+   this call. Heroes the email uses (the main hero and `alternate_hero_image_urls`) are
+   saved to the person's Hero Lab library; options never used are not. Check
    `get_campaign_status` as its text says until `hero_images` are ready, then follow
    its next step. On a predictive brand, Backstroke sends each demographic cohort the hero it
    predicts that demographic cohort will click, from the options and the person's heroes. About
@@ -83,7 +91,10 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    person, score the options with `score_hero_generic` and use its `best` (if it is
    pending, check `get_hero_scores` as its text says). If the
    options fail, try once more; if they fail again, tell the person: the email builds
-   with their heroes or one hero, and they can send their own hero to swap in. Pass `only_given_heroes: true` only when
+   with their heroes or one hero, and they can send their own hero to swap in. For hero options with no email, call
+   `generate_hero_images` without `campaign_id`, then `get_campaign_status` with the
+   `run_id`; to use a run's options in an email, pass the chosen option URL as
+   `create_campaign` `hero_image_url` and the others as `alternate_hero_image_urls`. Pass `only_given_heroes: true` only when
    the person says to use only their own images, `alternate_hero_image_urls: []`
    only when they ask for one hero for everyone, and `control_group: false` only
    when they ask for no control group; once they ask, pass it on every later
@@ -96,7 +107,10 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    the email in Backstroke. To change the draft, call `create_campaign` again with
    `campaign_id` and only the fields that change; `build: true` replaces the built
    email, with any edits made in the builder. When `hero_copy` changes, the options
-   still show the old copy: call `generate_hero_images` again and build when they are ready.
+   still show the old copy: call `generate_hero_images` with the `campaign_id`, the
+   `run_id` as `from_run_id` and the new `hero_copy`. It draws the new copy on the same
+   images, makes no new images and is free. Never ask the person for new images for a
+   copy change. Build when the options are ready.
 
 7. **Backstroke predictive subject lines.** Call `generate_subject_lines` with the
    `campaign_id` as soon as the email is built; do not ask first. Check
@@ -125,7 +139,7 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    call `generate_hero_images` again and build when they are ready (the build waits for them),
    unless the person asked for only their own images or one hero for everyone: then skip the
    options and build at once (the old product's hero leaves; the build uses theirs or picks one
-   from the new products); when `hero_copy` changed, call `generate_hero_images` again the same way;
+   from the new products); when `hero_copy` changed, redraw it with `from_run_id` as in step 6;
    when the products changed, call `generate_subject_lines` again; then preview the
    push again. Apply only on a yes given after the person saw this preview and its
    warnings; if you had no preview when they said yes, preview now, show it, and ask
