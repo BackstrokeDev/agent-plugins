@@ -73,7 +73,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 5. **Backstroke hero options, on every campaign.** Right after the apply, call
    `generate_hero_images` with the `campaign_id`. Do not ask, and do it even when
    the person gave their own heroes: the build waits for the options. Skip it only
-   when the person asked for only their own images or one hero for everyone. Check
+   when the person asked for only their own images or one hero for everyone. Backstroke
+   draws the campaign's `hero_copy` on each option, so set it before this call. Check
    `get_campaign_status` as its text says until `hero_images` are ready, then follow
    its next step. On a predictive brand, Backstroke sends each demographic cohort the hero it
    predicts that demographic cohort will click, from the options and the person's heroes. About
@@ -94,7 +95,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    says; a retry never schedules, and a push again waits for a yes as in step 8. Give the person the `app_url` so they can review
    the email in Backstroke. To change the draft, call `create_campaign` again with
    `campaign_id` and only the fields that change; `build: true` replaces the built
-   email, with any edits made in the builder.
+   email, with any edits made in the builder. When `hero_copy` changes, the options
+   still show the old copy: call `generate_hero_images` again and build when they are ready.
 
 7. **Backstroke predictive subject lines.** Call `generate_subject_lines` with the
    `campaign_id` as soon as the email is built; do not ask first. Check
@@ -123,7 +125,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    call `generate_hero_images` again and build when they are ready (the build waits for them),
    unless the person asked for only their own images or one hero for everyone: then skip the
    options and build at once (the old product's hero leaves; the build uses theirs or picks one
-   from the new products); when the products changed, call `generate_subject_lines` again; then preview the
+   from the new products); when `hero_copy` changed, call `generate_hero_images` again the same way;
+   when the products changed, call `generate_subject_lines` again; then preview the
    push again. Apply only on a yes given after the person saw this preview and its
    warnings; if you had no preview when they said yes, preview now, show it, and ask
    again. Never suggest a permission rule to skip a prompt. Then check
