@@ -81,7 +81,7 @@
     },
     "generate_hero_images": {
       "required": ["campaign_id"],
-      "params": ["campaign_id", "source_image_url", "styles", "method"],
+      "params": ["campaign_id", "source_image_url", "styles", "count", "method"],
       "outputFields": ["status", "campaign_id", "method", "styles", "estimate"],
       "refusals": ["invalid_request", "not_found", "already_pushed", "already_generating_heroes", "no_source_image"],
       "dailyLimit": 20
