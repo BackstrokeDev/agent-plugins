@@ -84,7 +84,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    finished heroes: the build waits for the options. Skip it only
    when the person asked for only their own images or one hero for everyone. Backstroke
    draws the campaign's `hero_copy` on each option, and on each photo, so set it before
-   this call. The heroes the email sends are saved to the person's Hero Lab library;
+   this call. When the person wants the words as text under a clean photo, not on the
+   image, pass `copy_on_hero: false` (some brands default to it). The heroes the email sends are saved to the person's Hero Lab library;
    options never used are not. Check
    `get_campaign_status` as its text says until `hero_images` are ready, then follow
    its next step. On a predictive brand, Backstroke sends each demographic cohort the hero it
