@@ -32,7 +32,8 @@ place to stop.
 ## Tell the person what is happening
 - Before the first long step, say the plan and the assumptions you made (products, copy,
   audience) in one or two lines.
-- Before each long step, say the step line its tool description gives, then call the tool.
+- Before each long step, say the step line its tool description gives, when the description says
+  (for a write tool, before the apply, not the preview).
 - A question to the person is its own short paragraph, last in the message. It says that
   nothing more happens until they answer.
 

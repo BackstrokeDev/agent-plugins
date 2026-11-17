@@ -168,6 +168,6 @@ test("create-campaign asks about own heroes before the options; setup names the 
 test("create-campaign tells the person the plan, each step line, and that a question waits (BAC-3419)", () => {
   const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(skill.includes("say the plan and the assumptions you made (products, copy, audience) in one or two lines"));
-  assert.ok(skill.includes("say the step line its tool description gives, then call the tool"));
+  assert.ok(skill.includes("say the step line its tool description gives, when the description says (for a write tool, before the apply"));
   assert.ok(skill.includes("is its own short paragraph, last in the message. It says that nothing more happens until they answer"));
 });
