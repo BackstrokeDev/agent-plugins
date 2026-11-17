@@ -34,6 +34,8 @@ place to stop.
   audience) in one or two lines.
 - Before each long step, say the step line its tool description gives, when the description says
   (for a write tool, before the apply, not the preview).
+- While `get_campaign_status` says a step still runs, tell the person its step line. Say it
+  again only when the step changes.
 - A question to the person is its own short paragraph, last in the message. It says that
   nothing more happens until they answer.
 
@@ -73,7 +75,7 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    gave. Always ask about heroes before the options are made: "Do you have your own hero
    images? Backstroke also makes hero options and sends each demographic cohort the one it
    predicts it will click. Backstroke draws the headline and button on them; if you want the words as text under a
-   clean photo, just say so." Their images join Backstroke's options; skip the options only
+   clean photo, just say so." Wait for the answer before you call `generate_hero_images`. Their images join Backstroke's options; skip the options only
    when they say to use only theirs. When the person gives an image, ask once: is it a finished hero (the copy
    already on it) or a photo? A finished hero is `hero_image_url`, used as it is. A
    photo is a base for `generate_hero_images` (step 5), which draws the copy on it. When
