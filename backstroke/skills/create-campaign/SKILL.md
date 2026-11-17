@@ -110,7 +110,12 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    still show the old copy: call `generate_hero_images` with the `campaign_id`, the
    newest `run_id` as `from_run_id` and the new `hero_copy`. It draws the new copy on the
    same images, makes no new images and is free; keep the new `run_id` it returns. Never ask the person for new images for a
-   copy change. Build when the options are ready.
+   copy change. Only the options the person kept are redrawn into the email. When the
+   person wants more options, call `generate_hero_images` again with the `campaign_id`
+   and the same `hero_copy`: the options they kept stay and the new ones fill the free
+   places. When they liked only some, pass those as `alternate_hero_image_urls` first.
+   When the result says some options did not fit, ask which heroes to keep. Build when
+   the options are ready.
 
 7. **Backstroke predictive subject lines.** Call `generate_subject_lines` with the
    `campaign_id` as soon as the email is built; do not ask first. Check

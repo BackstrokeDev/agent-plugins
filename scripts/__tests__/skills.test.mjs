@@ -154,5 +154,5 @@ test("snapshot: the hero tools carry the composed hero options contract (BAC-341
 
 test("create-campaign skill names the run_id and from_run_id hero flows (BAC-3418)", () => {
   const text = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8");
-  for (const token of ["from_run_id", "run_id", "base_image_urls", "description"]) assert.ok(text.includes("`" + token + "`"), token);
+  for (const token of ["from_run_id", "run_id", "base_image_urls", "description", "alternate_hero_image_urls"]) assert.ok(text.includes("`" + token + "`"), token);
 });
