@@ -72,10 +72,10 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 
 4. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls`,
    `hero_copy` and any `audiences`, `hero_link_url` and `hero_image_url` the person
-   gave. Always ask about heroes before the options are made: "Do you have your own hero
+   gave. When you ask the person anything before the options are made, ask about heroes in the same message: "Do you have your own hero
    images? Backstroke also makes hero options and sends each demographic cohort the one it
    predicts it will click. Backstroke draws the headline and button on them; if you want the words as text under a
-   clean photo, just say so." Wait for the answer before you call `generate_hero_images`. Their images join Backstroke's options; skip the options only
+   clean photo, just say so." If you ask nothing, say in one line how the copy will show and go on. Their images join Backstroke's options; skip the options only
    when they say to use only theirs. When the person gives an image, ask once: is it a finished hero (the copy
    already on it) or a photo? A finished hero is `hero_image_url`, used as it is. A
    photo is a base for `generate_hero_images` (step 5), which draws the copy on it. When
