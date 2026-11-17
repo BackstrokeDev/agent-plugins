@@ -24,8 +24,8 @@ allowed-tools:
 
 Take one prompt to a built email in Klaviyo, scheduled to send. **Run on by
 yourself.** Fill every gap you can from the brand and the catalog, and ask the person
-only for what you cannot know, in one message: the audience, the hero link, and their
-own hero image if they have one. Two steps always wait for the person's explicit yes:
+only for what you cannot know, in one message: the audience, the hero link, and whether
+they have their own hero images. Two steps always wait for the person's explicit yes:
 the push to Klaviyo and the schedule. Nothing else needs a yes. A built draft is a fine
 place to stop.
 
@@ -62,11 +62,14 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 
 4. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls`,
    `hero_copy` and any `audiences`, `hero_link_url` and `hero_image_url` the person
-   gave. When the person gives an image, ask once: is it a finished hero (the copy
+   gave. Always ask about heroes before the options are made: "Do you have your own hero
+   images? Backstroke also makes hero options and sends each demographic cohort the one it
+   predicts it will click." Their images join Backstroke's options; skip the options only
+   when they say to use only theirs. When the person gives an image, ask once: is it a finished hero (the copy
    already on it) or a photo? A finished hero is `hero_image_url`, used as it is. A
    photo is a base for `generate_hero_images` (step 5), which draws the copy on it. When
-   the image is a file, call `request_image_upload`, give them the link, and pass the
-   `upload_id` it returns: as `upload_id` for a finished hero, in `upload_ids` for a
+   the image is a file, call `request_image_upload` and upload as its text says (no curl
+   first in a hosted sandbox), then pass the `upload_id` it returns: as `upload_id` for a finished hero, in `upload_ids` for a
    photo. To suggest audiences, call `list_audiences` (Klaviyo lists and segments, most used first) and
    let the person confirm or change them in one reply; they may pick more than one.
    When `create_campaign` refuses for audiences, use the names it gives. For the hero

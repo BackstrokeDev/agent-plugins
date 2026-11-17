@@ -156,3 +156,11 @@ test("create-campaign skill names the run_id and from_run_id hero flows (BAC-341
   const text = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8");
   for (const token of ["from_run_id", "run_id", "base_image_urls", "description", "alternate_hero_image_urls"]) assert.ok(text.includes("`" + token + "`"), token);
 });
+
+test("create-campaign asks about own heroes before the options; setup names the admin allowlist step", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("Always ask about heroes before the options are made"));
+  assert.ok(skill.includes("Their images join Backstroke's options"));
+  const setup = readFileSync(join(root, "backstroke", "skills", "setup", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(setup.includes("only an admin can add the host"));
+});
