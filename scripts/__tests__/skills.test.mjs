@@ -160,7 +160,9 @@ test("create-campaign skill names the run_id and from_run_id hero flows (BAC-341
 test("create-campaign asks about heroes with any other question, and does not block on it; setup names the admin allowlist step", () => {
   const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(skill.includes("When you ask the person anything before the options are made, ask about heroes in the same message"));
-  assert.ok(skill.includes("If you ask nothing, say in one line how the copy will show and go on"));
+  assert.ok(skill.includes("If you ask nothing, call it with `chosen_by` agent and tell the person the line its result gives"));
+  assert.ok(skill.includes("When they answer, call `generate_hero_images` with `chosen_by` person"));
+  assert.ok(!skill.includes("clean photo"));
   assert.ok(!skill.includes("Wait for the answer before you call `generate_hero_images`"));
   assert.ok(skill.includes("Their images join Backstroke's options"));
   const setup = readFileSync(join(root, "backstroke", "skills", "setup", "SKILL.md"), "utf8").replace(/\s+/g, " ");
