@@ -58,9 +58,10 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
 `awaiting_email_approval`, the campaign waits for the person. Do this:
 
 - Say the status `step_line` to the person.
-- At the hero gate, show the hero options as a numbered list with their links. At the
+- At the hero gate, show the status `approval.hero_options` as a numbered list, with
+  each option's `num` and link: the Backstroke view uses the same numbers. At the
   email gate, show the email outline and the `app_url`.
-- Then **stop checking**. The person may approve in the Backstroke panel. You then get
+- Then **stop checking**. The person may approve in the Backstroke view in the chat. You then get
   a short message like "Approved hero 3": resume checking.
 - In chat, approve only on the person's own words, through `approve_campaign_step`.
   At the hero gate the `selection` is `{main_url, include_urls}` from the numbers they
