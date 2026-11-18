@@ -119,7 +119,9 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    the control" with `[]`: that also turns off the per-demographic-cohort heroes.
 
 6. **Wait for the build.** Check `get_campaign_status` with the `campaign_id` as its
-   text says until its `step` is `built`. On `error`, retry once as the status text
+   text says until its `step` is `built`. Then read its `email_outline` against the
+   brief: every product, the hero copy, the order and the links. Tell the person what
+   does not match, and fix it with `create_campaign` (`build: true`). On `error`, retry once as the status text
    says; a retry never schedules, and a push again waits for a yes as in step 8. Give the person the `app_url` so they can review
    the email in Backstroke. To change the draft, call `create_campaign` again with
    `campaign_id` and only the fields that change; `build: true` replaces the built
