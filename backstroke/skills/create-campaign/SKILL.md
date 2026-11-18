@@ -62,7 +62,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   each option's `num` and link: the Backstroke view uses the same numbers. At the
   email gate, show the email outline and the `app_url`.
 - Then **stop checking**. The person may approve in the Backstroke view in the chat. You then get
-  a short message like "Approved hero 3": resume checking.
+  a short message like "Approved hero 3": that approval is already recorded, so do not call
+  `approve_campaign_step` for it. Resume checking.
 - In chat, approve only on the person's own words, through `approve_campaign_step`.
   At the hero gate the `selection` is `{main_url, include_urls}` from the numbers they
   name ("main 3, also 1 and 5"), or `{backstroke_chooses: true}` for "you choose" or
@@ -169,9 +170,10 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    once the options are ready: the hero approval starts it. Without gates, build when
    the options are ready.
 
-7. **Backstroke predictive subject lines.** After a build, do not call
-   `generate_subject_lines`: the server starts the subject lines after the email
-   approval, or by itself in autonomous mode. Check `get_campaign_status` until `step`
+7. **Backstroke predictive subject lines.** With approval gates (the status has
+   `approval`), do not call `generate_subject_lines` after a build: the server starts the
+   subject lines after the email approval, or by itself in autonomous mode. Without gates,
+   call `generate_subject_lines` with the `campaign_id` after the build. Check `get_campaign_status` until `step`
    is `subject_lines_ready`. On a subject-line error, tell the person the
    `error_message` and stop: do not retry. Show the
    `subject_line_options` (Backstroke predictive subject lines, made for this brand's
@@ -197,11 +199,13 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    say so with the reach numbers from the status; give no lift percentage. End with "Want to swap anything, or shall I push it to
    Klaviyo as a draft?" After a swap, build again with `create_campaign` and
    `build: true`; when the first product changed, the old hero options no longer fit:
-   call `generate_hero_images` again and build when they are ready (the build waits for them),
+   call `generate_hero_images` again; with approval gates the new options wait at the hero
+   gate as in step 6, without gates build when they are ready (the build waits for them),
    unless the person asked for only their own images or one hero for everyone: then skip the
    options and build at once (the old product's hero leaves; the build uses theirs or picks one
    from the new products); when `hero_copy` changed, redraw it with `from_run_id` as in step 6;
-   when the products changed, call `generate_subject_lines` again; then preview the
+   when the products changed and the campaign has no approval gates, call
+   `generate_subject_lines` again (with gates, wait at the email gate as in step 7); then preview the
    push again. Apply only on a yes given after the person saw this preview and its
    warnings; if you had no preview when they said yes, preview now, show it, and ask
    again. Never suggest a permission rule to skip a prompt. Then check
