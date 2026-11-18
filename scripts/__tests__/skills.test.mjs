@@ -157,10 +157,21 @@ test("create-campaign skill names the run_id and from_run_id hero flows (BAC-341
   for (const token of ["from_run_id", "run_id", "base_image_urls", "description", "alternate_hero_image_urls"]) assert.ok(text.includes("`" + token + "`"), token);
 });
 
-test("create-campaign asks about own heroes before the options; setup names the admin allowlist step", () => {
+test("create-campaign asks about heroes with any other question, and does not block on it; setup names the admin allowlist step", () => {
   const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(skill.includes("Always ask about heroes before the options are made"));
+  assert.ok(skill.includes("When you ask the person anything before the options are made, ask about heroes in the same message"));
+  assert.ok(skill.includes("If you ask nothing, call it with `chosen_by` agent and tell the person the line its result gives"));
+  assert.ok(skill.includes("When they answer, call `generate_hero_images` with `chosen_by` person"));
+  assert.ok(!skill.includes("clean photo"));
+  assert.ok(!skill.includes("Wait for the answer before you call `generate_hero_images`"));
   assert.ok(skill.includes("Their images join Backstroke's options"));
   const setup = readFileSync(join(root, "backstroke", "skills", "setup", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(setup.includes("only an admin can add the host"));
+});
+
+test("create-campaign tells the person the plan, each step line, and that a question waits (BAC-3419)", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("say the plan and the assumptions you made (products, copy, audience) in one or two lines"));
+  assert.ok(skill.includes("say the step line its tool description gives, when the description says (for a write tool, before the apply"));
+  assert.ok(skill.includes("is its own short paragraph, last in the message. It says that nothing more happens until they answer"));
 });

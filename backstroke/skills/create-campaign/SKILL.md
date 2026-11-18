@@ -29,6 +29,16 @@ they have their own hero images. Two steps always wait for the person's explicit
 the push to Klaviyo and the schedule. Nothing else needs a yes. A built draft is a fine
 place to stop.
 
+## Tell the person what is happening
+- Before the first long step, say the plan and the assumptions you made (products, copy,
+  audience) in one or two lines.
+- Before each long step, say the step line its tool description gives, when the description says
+  (for a write tool, before the apply, not the preview).
+- While `get_campaign_status` says a step still runs, tell the person its step line. Say it
+  again only when the step changes.
+- A question to the person is its own short paragraph, last in the message. It says that
+  nothing more happens until they answer.
+
 ## How every write works
 `create_campaign`, `push_campaign_to_klaviyo` and `schedule_campaign` are each **one
 tool called twice**:
@@ -62,10 +72,12 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 
 4. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls`,
    `hero_copy` and any `audiences`, `hero_link_url` and `hero_image_url` the person
-   gave. Always ask about heroes before the options are made: "Do you have your own hero
+   gave. When you ask the person anything before the options are made, ask about heroes in the same message: "Do you have your own hero
    images? Backstroke also makes hero options and sends each demographic cohort the one it
-   predicts it will click. Backstroke draws the headline and button on them; if you want the words as text under a
-   clean photo, just say so." Their images join Backstroke's options; skip the options only
+   predicts it will click. Backstroke draws the headline and button onto the image; if you want photos with no
+   words on them, with the headline as normal text in the email under the photo, just say so." When they answer,
+   call `generate_hero_images` with `chosen_by` person. If you ask nothing, call it with `chosen_by` agent and tell
+   the person the line its result gives. Their images join Backstroke's options; skip the options only
    when they say to use only theirs. When the person gives an image, ask once: is it a finished hero (the copy
    already on it) or a photo? A finished hero is `hero_image_url`, used as it is. A
    photo is a base for `generate_hero_images` (step 5), which draws the copy on it. When
@@ -85,7 +97,7 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    finished heroes: the build waits for the options. Skip it only
    when the person asked for only their own images or one hero for everyone. Backstroke
    draws the campaign's `hero_copy` on each option, and on each photo, so set it before
-   this call. When the person wants the words as text under a clean photo, not on the
+   this call. When the person wants the words as text under a photo with no words on it, not on the
    image, or their finished hero has no words on it, pass `copy_on_hero: false` (some brands default to it). The heroes the email sends are saved to the person's Hero Lab library;
    options never used are not. Check
    `get_campaign_status` as its text says until `hero_images` are ready, then follow
