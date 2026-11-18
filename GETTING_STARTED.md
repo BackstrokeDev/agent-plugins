@@ -43,6 +43,9 @@ respond.
 Run the **`backstroke`** skill — the entry point. It picks the right recipe:
 - **`create-campaign`** — a campaign from one prompt: brief, build, subject lines,
   push to Klaviyo and schedule.
+- **`predictive-set`** — finished heroes with your headline on them, scored for every
+  cohort against your control; you pick by number and approve before the set is added
+  (accounts with predictive sets turned on).
 - **`subject-line-ab-optimizer`** — stronger per-audience subject lines for a
   Klaviyo campaign, set up as A/B variants (with your approval before anything is
   written).
