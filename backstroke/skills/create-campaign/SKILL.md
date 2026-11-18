@@ -119,7 +119,16 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    the control" with `[]`: that also turns off the per-demographic-cohort heroes.
 
 6. **Wait for the build.** Check `get_campaign_status` with the `campaign_id` as its
-   text says until its `step` is `built`. On `error`, retry once as the status text
+   text says until its `step` is `built`. When the status has an `email_outline`, check
+   it against the brief: the products (match each by the handle after `/products/` in
+   its link; the links carry a collection path), the order and the links. Check the
+   hero copy with `hero_copy` (`placed` and `missing`), never with the outline: copy
+   drawn on the hero image is not in the email text. Parts counted in
+   `email_outline_omitted` were cut from the outline, not from the email. Tell the
+   person what matched first, then what does not. Rebuild to fix it at most once, and
+   ask first if the person may have edited the email in the builder (`build: true`
+   replaces those edits). If it still does not match, give the person the `app_url`.
+   On `error`, retry once as the status text
    says; a retry never schedules, and a push again waits for a yes as in step 8. Give the person the `app_url` so they can review
    the email in Backstroke. To change the draft, call `create_campaign` again with
    `campaign_id` and only the fields that change; `build: true` replaces the built
