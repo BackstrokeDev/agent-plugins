@@ -10,6 +10,16 @@ invisible until someone names it).
   (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
 
+## 0.5.0
+- **Hero options carry your hero copy** — each generated hero option has your headline
+  and button drawn on it, laid out as in Hero Lab Bulk. Your own photos can be options
+  too, with the copy drawn on them.
+- **You choose how the hero looks** — before it makes hero options, the agent asks how
+  the hero should look. If it chose for you, it says what it chose and how to change it.
+- **You see each step** — while the campaign builds, the agent tells you each step in
+  one short line: making heroes, drawing the copy, building the email, subject lines,
+  ready.
+
 ## 0.4.0
 - **Make a campaign from one prompt** — describe the email, the products and the
   audience. Backstroke picks products from your catalog, writes the brief and the hero
