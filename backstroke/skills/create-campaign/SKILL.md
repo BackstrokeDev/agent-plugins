@@ -16,6 +16,7 @@ allowed-tools:
   - score_hero_generic
   - get_hero_scores
   - get_campaign_status
+  - approve_campaign_step
   - generate_subject_lines
   - push_campaign_to_klaviyo
 ---
@@ -52,10 +53,32 @@ tool called twice**:
 `stale_preview` means something changed after the preview: preview again. Every
 refusal's message says the next step — follow it; do not guess or retry blindly.
 
+## Approval gates
+When `get_campaign_status` shows `step` `awaiting_hero_approval` or
+`awaiting_email_approval`, the campaign waits for the person. Do this:
+
+- Say the status `step_line` to the person.
+- At the hero gate, show the hero options as a numbered list with their links. At the
+  email gate, show the email outline and the `app_url`.
+- Then **stop checking**. The person may approve in the Backstroke panel. You then get
+  a short message like "Approved hero 3": resume checking.
+- In chat, approve only on the person's own words, through `approve_campaign_step`.
+  At the hero gate the `selection` is `{main_url, include_urls}` from the numbers they
+  name ("main 3, also 1 and 5"), or `{backstroke_chooses: true}` for "you choose" or
+  "use Backstroke's picks". The email gate has no `selection`.
+- Never approve on your own.
+- When the person wants more heroes, call `generate_hero_images` again for the same
+  campaign. The new options join the list with new numbers.
+- When the person wants other heroes after the build, they pick again. The new
+  approval rebuilds the email once by itself.
+
 ## Goals, in order
 
 1. **Learn the brand.** Call `get_brand_config` so the brief and copy match the
-   brand voice.
+   brand voice. Ask only for what is missing, all at once. If the person says not to
+   ask them anything, or to just do it, call `create_campaign` with `approval_mode`
+   `autonomous` and `approval_mode_reason` set to their words. Otherwise leave
+   `approval_mode` unset: the account default applies.
 
 2. **Pick the products.** Use the products the person named. Otherwise call
    `find_products` with words from the prompt (`on_sale` for a sale email). Pick up
@@ -140,19 +163,24 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    person wants more options, call `generate_hero_images` again with the `campaign_id`
    and the same `hero_copy`: the options they kept stay and the new ones fill the free
    places. When they liked only some, pass those as `alternate_hero_image_urls` first.
-   When the result says some options did not fit, ask which heroes to keep. Build when
+   When the result says some options did not fit, ask which heroes to keep. With
+   approval gates, do not call `create_campaign` with `build: true` to start the build
+   once the options are ready: the hero approval starts it. Without gates, build when
    the options are ready.
 
-7. **Backstroke predictive subject lines.** Call `generate_subject_lines` with the
-   `campaign_id` as soon as the email is built; do not ask first. Check
-   `get_campaign_status` until `step` is `subject_lines_ready`. Show the
+7. **Backstroke predictive subject lines.** After a build, do not call
+   `generate_subject_lines`: the server starts the subject lines after the email
+   approval, or by itself in autonomous mode. Check `get_campaign_status` until `step`
+   is `subject_lines_ready`. On a subject-line error, tell the person the
+   `error_message` and stop: do not retry. Show the
    `subject_line_options` (Backstroke predictive subject lines, made for this brand's
    audience) with the one you recommend and why. Never write your own subject lines;
    if the person gives one, use theirs as given.
 
 8. **One recap, then push to Klaviyo — needs a yes.** Preview
    `push_campaign_to_klaviyo` with the `campaign_id` and `selected_subjects`: exactly
-   one `{ subject, preview }`. Then give one recap: the products and why each was
+   one `{ subject, preview }`. Then give one recap: the approval mode
+   (review or autonomous); the products and why each was
    picked; the offer and headline, marked "(I wrote these)" when you wrote them; the
    heroes, as `get_campaign_status` gives them (below); the audience; the subject line
    Backstroke recommends and why; the links and the `app_url`; the preview's profile
@@ -164,7 +192,8 @@ refusal's message says the next step — follow it; do not guess or retry blindl
    it."); when it has a control note, say that. When the email has one hero picked from
    Backstroke's options, say "Backstroke made these hero options; I used the one I
    recommend." When the email has one hero and no options were made, give no
-   hero-options credit and no control line. End with "Want to swap anything, or shall I push it to
+   hero-options credit and no control line. When the person left out predicted winners,
+   say so with the reach numbers from the status; give no lift percentage. End with "Want to swap anything, or shall I push it to
    Klaviyo as a draft?" After a swap, build again with `create_campaign` and
    `build: true`; when the first product changed, the old hero options no longer fit:
    call `generate_hero_images` again and build when they are ready (the build waits for them),

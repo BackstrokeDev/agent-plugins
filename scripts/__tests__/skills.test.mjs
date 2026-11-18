@@ -18,7 +18,7 @@ function liveCheck(tools) {
   return spawnSync("node", [join(root, "scripts", "check-live-catalog.mjs"), "--catalog", file], { encoding: "utf8" });
 }
 
-const create = ["get_brand_config", "find_products", "list_audiences", "create_campaign", "generate_hero_images", "request_image_upload", "score_hero_generic", "get_hero_scores", "get_campaign_status", "generate_subject_lines", "push_campaign_to_klaviyo"];
+const create = ["get_brand_config", "find_products", "list_audiences", "create_campaign", "generate_hero_images", "request_image_upload", "score_hero_generic", "get_hero_scores", "get_campaign_status", "approve_campaign_step", "generate_subject_lines", "push_campaign_to_klaviyo"];
 
 test("readSkills parses create-campaign allowed tools", () => {
   assert.deepEqual(byName(readSkills(root), "create-campaign").allowed_tools, create);
