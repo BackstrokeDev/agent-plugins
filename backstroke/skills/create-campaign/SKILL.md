@@ -57,6 +57,10 @@ refusal's message says the next step — follow it; do not guess or retry blindl
 When `get_campaign_status` shows `step` `awaiting_hero_approval` or
 `awaiting_email_approval`, the campaign waits for the person. Do this:
 
+- In a host that shows apps, the `generate_hero_images` result opens the Backstroke view,
+  and it follows the campaign through every step by itself. Call `open_app` only when
+  the person asks to see the view again. While the view is open, say one short line per
+  step and do not repeat what it shows.
 - Say the status `step_line` to the person.
 - At the hero gate, show the status `approval.hero_options` as a numbered list, with
   each option's `num` and link: the Backstroke view uses the same numbers. At the
@@ -69,8 +73,12 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   name ("main 3, also 1 and 5"), or `{backstroke_chooses: true}` for "you choose" or
   "use Backstroke's picks". The email gate has no `selection`.
 - Never approve on your own.
-- When the person wants more heroes, call `generate_hero_images` again for the same
-  campaign. The new options join the list with new numbers.
+- When the person asks in the chat for more heroes, call `generate_hero_images` again for
+  the same campaign. The new options join the list with new numbers. A message like
+  "Asked Backstroke for more hero options" means the view already started them: do not
+  call `generate_hero_images` for it.
+- Before the hero approval, never build: not even when the options are ready and the
+  step is `draft`. The hero approval starts the build.
 - When the person wants other heroes after the build, they pick again. The new
   approval rebuilds the email once by itself.
 
