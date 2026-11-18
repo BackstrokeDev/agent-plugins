@@ -10,6 +10,12 @@ invisible until someone names it).
   (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
 
+## 0.5.1
+- **The agent checks the built email** — after the build, it compares the email with
+  your brief (the products, the order, the links and the hero copy) and tells you what
+  matched and what does not. It rebuilds at most once to fix it, and asks first if you
+  may have edited the email in the builder.
+
 ## 0.5.0
 - **Hero options carry your hero copy** — each generated hero option has your headline
   and button drawn on it, laid out as in Hero Lab Bulk. Your own photos can be options

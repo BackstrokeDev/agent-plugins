@@ -178,8 +178,15 @@ test("create-campaign tells the person the plan, each step line, and that a ques
 
 test("create-campaign reads the built email's outline against the brief; the status carries it untrusted", () => {
   const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(skill.includes("read its `email_outline` against the brief"));
-  assert.ok(skill.includes("cut from the outline, not from the email"));
+  for (const line of [
+    "When the status has an `email_outline`",
+    "match each by the handle after `/products/`",
+    "Check the hero copy with `hero_copy` (`placed` and `missing`), never with the outline",
+    "cut from the outline, not from the email",
+    "Tell the person what matched first",
+    "Rebuild to fix it at most once",
+    "ask first if the person may have edited the email in the builder",
+  ]) assert.ok(skill.includes(line), line);
   const status = JSON.parse(readFileSync(join(root, "backstroke", "schema", "tools-snapshot.json"), "utf8")).tools.get_campaign_status;
   for (const f of ["email_outline", "email_outline_omitted"]) assert.ok(status.outputFields.includes(f), f);
   assert.ok(status.untrustedFields.includes("email_outline"));
