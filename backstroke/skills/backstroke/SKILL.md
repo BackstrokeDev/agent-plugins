@@ -54,8 +54,9 @@ with the live Backstroke MCP, run the **`update`** skill.
 **Klaviyo cluster — Backstroke's own Klaviyo round-trip:**
 `list_klaviyo_campaigns`, `read_campaign_content`, `list_clusters`, `list_audiences`, `push_subject_lines`.
 
-**Campaign flow:** `create_campaign` → `get_campaign_status` → `generate_subject_lines`
-→ `push_campaign_to_klaviyo` → `schedule_campaign`. Without the `campaign_id`, call
+**Campaign flow:** `create_campaign` → `get_campaign_status` → `approve_campaign_step`
+(when the campaign waits for the person) → `generate_subject_lines` (without
+approval gates) → `push_campaign_to_klaviyo` → `schedule_campaign`. Without the `campaign_id`, call
 `get_campaign_status` with the campaign's `name`.
 
 Every write (`create_campaign`, `push_subject_lines`, `push_campaign_to_klaviyo`,

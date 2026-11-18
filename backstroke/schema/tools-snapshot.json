@@ -1,8 +1,8 @@
 {
   "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was observed, or whose source contract verifiedAgainst names — absent means not yet verified, not empty. `dailyLimit` is the default per-brand limit (an account can differ).",
   "endpoint": "https://mcp.backstroke.com/mcp",
-  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. generate_hero_images and get_campaign_status follow the BAC-3418 source and are not yet deployed. get_campaign_status email_outline is on prod from 2026-11-18 (backstroke#898). read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
-  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find"],
+  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. generate_hero_images and get_campaign_status follow the BAC-3418 source and are not yet deployed. get_campaign_status email_outline is on prod from 2026-11-18 (backstroke#898). approve_campaign_step and the create_campaign approval_mode params follow the BAC-3450 source and are not yet deployed. read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
+  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find", "approve"],
   "tools": {
     "score_hero_generic": {
       "required": [],
@@ -67,10 +67,14 @@
     },
     "create_campaign": {
       "required": [],
-      "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "fingerprint"],
+      "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "approval_mode", "approval_mode_reason", "fingerprint"],
       "outputFields": ["campaign_id", "name", "status", "build_started", "build_skipped_reason", "products_added", "failed_urls", "app_url", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
       "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "stale_preview", "apply_in_progress", "apply_interrupted"],
       "dailyLimit": 20
+    },
+    "approve_campaign_step": {
+      "required": ["campaign_id", "gate"],
+      "params": ["campaign_id", "gate", "selection", "fingerprint"]
     },
     "find_products": {
       "required": [],
