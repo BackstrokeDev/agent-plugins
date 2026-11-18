@@ -100,8 +100,9 @@ guess or retry blindly.
    hero: go to step 7, and do not preview the add again.
    **Kept control** (`verdict_kind` is `keep_control`): the control stays the default
    send and the set is optional. Say the status's lines, then offer its two choices in
-   its order: keep the control (`create_campaign` with `campaign_id`, `build: true`,
-   `only_given_heroes: true`, then on through steps 7 and 8), or add the set (step 6).
+   its order: keep the control (`create_campaign` with `campaign_id`, the
+   `hero_image_url` the status names, `build: true`, `only_given_heroes: true`, then on
+   through steps 7 and 8), or add the set (step 6).
    Do not push the set.
 
 6. **Preview the add, then wait for a yes.** Preview `add_set_to_campaign` with the
@@ -133,8 +134,9 @@ guess or retry blindly.
 - **`no_winner`, `emptied`, `expired` or `stopped`, or "I don't like these":** say what
   happened plainly, then offer three ways on: make another predictive set (needs a
   fresh yes; uses one of today's); switch to hero options (hand off to
-  `create-campaign`); or keep the control: `create_campaign` with `campaign_id`,
-  `build: true`, `only_given_heroes: true`, then steps 7 and 8. For `emptied`, say the
+  `create-campaign`); or keep the control: `create_campaign` with `campaign_id`, the
+  `hero_image_url` the status names, `build: true`, `only_given_heroes: true`, then
+  steps 7 and 8. For `emptied`, say the
   heroes the status counts can be added back in Backstroke.
 - **`loop_pending`** on a build (or a hero-options refusal while a set is being made):
   wait for the set as in step 4. In chat, approving the set is steps 5 and 6
