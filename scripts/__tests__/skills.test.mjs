@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { writeFileSync, mkdtempSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdtempSync, mkdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -137,4 +137,41 @@ test("drift check: a quoted block item all still counts as published", () => {
 test("drift check: a hosts line in the skill body does not make a published skill plugin-only", () => {
   // No hosts key means published to all; only the body names claude-plugin.
   assert.equal(driftCheck("", "Read", "Example:\nhosts: [claude-plugin]").status, 1);
+});
+
+test("snapshot: the hero tools carry the composed hero options contract (BAC-3418)", () => {
+  const { tools } = JSON.parse(readFileSync(join(root, "backstroke", "schema", "tools-snapshot.json"), "utf8"));
+  const gen = tools.generate_hero_images;
+  for (const p of ["description", "base_image_urls", "upload_ids", "hero_copy", "from_run_id", "count"]) assert.ok(gen.params.includes(p), `generate_hero_images param ${p}`);
+  assert.deepEqual(gen.required, []);
+  assert.ok(gen.outputFields.includes("run_id"));
+  assert.ok(gen.refusals.includes("no_source") && !gen.refusals.includes("no_source_image"));
+  const status = tools.get_campaign_status;
+  assert.ok(status.params.includes("run_id"));
+  assert.ok(status.outputFields.includes("run_id"));
+  assert.ok(status.untrustedFields.includes("saved_rows"));
+});
+
+test("create-campaign skill names the run_id and from_run_id hero flows (BAC-3418)", () => {
+  const text = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8");
+  for (const token of ["from_run_id", "run_id", "base_image_urls", "description", "alternate_hero_image_urls"]) assert.ok(text.includes("`" + token + "`"), token);
+});
+
+test("create-campaign asks about heroes with any other question, and does not block on it; setup names the admin allowlist step", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("When you ask the person anything before the options are made, ask about heroes in the same message"));
+  assert.ok(skill.includes("If you ask nothing, call it with `chosen_by` agent and tell the person the line its result gives"));
+  assert.ok(skill.includes("When they answer, call `generate_hero_images` with `chosen_by` person"));
+  assert.ok(!skill.includes("clean photo"));
+  assert.ok(!skill.includes("Wait for the answer before you call `generate_hero_images`"));
+  assert.ok(skill.includes("Their images join Backstroke's options"));
+  const setup = readFileSync(join(root, "backstroke", "skills", "setup", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(setup.includes("only an admin can add the host"));
+});
+
+test("create-campaign tells the person the plan, each step line, and that a question waits (BAC-3419)", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("say the plan and the assumptions you made (products, copy, audience) in one or two lines"));
+  assert.ok(skill.includes("say the step line its tool description gives, when the description says (for a write tool, before the apply"));
+  assert.ok(skill.includes("is its own short paragraph, last in the message. It says that nothing more happens until they answer"));
 });

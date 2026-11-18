@@ -112,6 +112,8 @@ The hero tools can score image **files** through `request_image_upload`. The fas
 runs `curl` from Claude, so it needs code execution turned on and the Backstroke API
 host (`api.backstroke.com`) on the allowed domains list in your Claude settings.
 Without that, the tool gives you an `upload_url` to open in the browser instead.
+On a Team or Enterprise plan, only an admin can add the host: in the organization's
+settings, add `api.backstroke.com` to the allowed domains for code execution.
 
 ## 3. Verify
 Run a harmless read-only call, e.g. **`list_clusters`** or `list_klaviyo_campaigns`. A
