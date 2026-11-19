@@ -10,6 +10,16 @@ invisible until someone names it).
   (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
 
+## 0.6.0
+- **The agent stops for you at the hero and the email** — in review mode, it shows your
+  hero options and then the built email, and waits for your yes before it goes on. You
+  can approve in the Backstroke view in the chat or in the chat itself.
+- **Changes come before the yes** — if you say "looks good, but swap the second
+  product", it makes the change first and asks for your yes again.
+- **Hands off when you ask** — say "just do it", "do not ask me anything" or "run it
+  yourself", and it runs the whole campaign without these stops. The push to Klaviyo and
+  the schedule still wait for your yes.
+
 ## 0.5.1
 - **The agent checks the built email** — after the build, it compares the email with
   your brief (the products, the order, the links and the hero copy) and tells you what
