@@ -18,7 +18,7 @@ function liveCheck(tools) {
   return spawnSync("node", [join(root, "scripts", "check-live-catalog.mjs"), "--catalog", file], { encoding: "utf8" });
 }
 
-const create = ["get_brand_config", "find_products", "list_audiences", "create_campaign", "generate_hero_images", "request_image_upload", "score_hero_generic", "get_hero_scores", "get_campaign_status", "approve_campaign_step", "generate_subject_lines", "push_campaign_to_klaviyo"];
+const create = ["get_brand_config", "find_products", "list_audiences", "create_campaign", "generate_hero_images", "request_image_upload", "score_hero_generic", "get_hero_scores", "get_campaign_status", "approve_campaign_step", "generate_subject_lines", "pick_subject_line", "push_campaign_to_klaviyo"];
 
 test("readSkills parses create-campaign allowed tools", () => {
   assert.deepEqual(byName(readSkills(root), "create-campaign").allowed_tools, create);
@@ -179,15 +179,18 @@ test("create-campaign tells the person the plan, each step line, and that a ques
 test("create-campaign reads the built email's outline against the brief; the status carries it untrusted", () => {
   const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   for (const line of [
-    "When the status has an `email_outline`",
-    "match each by the handle after `/products/`",
+    "When the status has an `email_check`, say it first",
+    "give your own view of the `email_outline` against the brief",
+    "Once `approved_line` names the email, never rebuild",
+    "call `pick_subject_line` with the `campaign_id` and that number",
+    "No chat message comes",
     "Check the hero copy with `hero_copy` (`placed` and `missing`), never with the outline",
     "cut from the outline, not from the email",
     "Tell the person what matched first",
-    "Rebuild to fix it at most once",
+    "rebuild to fix it at most once",
     "ask first if the person may have edited the email in the builder",
   ]) assert.ok(skill.includes(line), line);
   const status = JSON.parse(readFileSync(join(root, "backstroke", "schema", "tools-snapshot.json"), "utf8")).tools.get_campaign_status;
-  for (const f of ["email_outline", "email_outline_omitted"]) assert.ok(status.outputFields.includes(f), f);
-  assert.ok(status.untrustedFields.includes("email_outline"));
+  for (const f of ["email_outline", "email_outline_omitted", "email_check", "approved_line"]) assert.ok(status.outputFields.includes(f), f);
+  for (const f of ["email_outline", "email_check"]) assert.ok(status.untrustedFields.includes(f), f);
 });

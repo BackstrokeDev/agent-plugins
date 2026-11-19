@@ -18,6 +18,7 @@ allowed-tools:
   - get_campaign_status
   - approve_campaign_step
   - generate_subject_lines
+  - pick_subject_line
   - push_campaign_to_klaviyo
 ---
 
@@ -72,9 +73,10 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   `product_photo` is "(product photo)", `yours` is "Yours". For example "1. (product
   photo)", "3. Worn in use (Backstroke option)", "5. Yours". At the
   email gate, show the email outline and the `app_url`.
-- Then **stop checking**. The person may approve in the Backstroke view in the chat. You then get
-  a short message like "Approved hero 3": that approval is already recorded, so do not call
-  `approve_campaign_step` for it. Resume checking.
+- Then **stop checking**. The person may approve in the Backstroke view in the chat. No chat
+  message comes: the view and you are two separate callers. On the person's next message, read
+  `get_campaign_status` first. Its `approved_line` says what was approved, where and when: say it,
+  work from it, and do not call `approve_campaign_step` for it.
 - In chat, approve only on the person's own words, through `approve_campaign_step`.
   A plain yes counts as the approval: preview and apply at once, without asking again. When the yes
   comes with a change ("looks good, but swap the second product"), edit first, then
@@ -167,13 +169,16 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    the control" with `[]`: that also turns off the per-demographic-cohort heroes.
 
 6. **Wait for the build.** Check `get_campaign_status` with the `campaign_id` as its
-   text says until its `step` is `built`. When the status has an `email_outline`, check
-   it against the brief: the products (match each by the handle after `/products/` in
-   its link; the links carry a collection path), the order and the links. Check the
+   text says until its `step` is `built`. When the status has an `email_check`, say it
+   first: it is Backstroke's check of the products and their order, and the Backstroke view
+   shows the same one. Then give your own view of the `email_outline` against the brief
+   (the offer, the tone, what the check does not cover). Check the
    hero copy with `hero_copy` (`placed` and `missing`), never with the outline: copy
    drawn on the hero image is not in the email text. Parts counted in
    `email_outline_omitted` were cut from the outline, not from the email. Tell the
-   person what matched first, then what does not. Rebuild to fix it at most once, and
+   person what matched first, then what does not. Once `approved_line` names the email,
+   never rebuild: `create_campaign` refuses it. Give your notes; the person can edit the
+   email in Backstroke. Before that, rebuild to fix it at most once, and
    ask first if the person may have edited the email in the builder (`build: true`
    replaces those edits). If it still does not match, give the person the `app_url`.
    On `error`, retry once as the status text
@@ -201,7 +206,9 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    is `subject_lines_ready`. On a subject-line error, tell the person the
    `error_message` and stop: do not retry. Show the
    `subject_line_options` (Backstroke predictive subject lines, made for this brand's
-   audience) with the one you recommend and why. Never write your own subject lines;
+   audience) with the one you recommend and why. When the person picks a number, call
+   `pick_subject_line` with the `campaign_id` and that number: the Backstroke view uses the
+   same numbers and shows the pick. Never write your own subject lines;
    if the person gives one, use theirs as given.
 
 8. **One recap, then push to Klaviyo — needs a yes.** Preview
