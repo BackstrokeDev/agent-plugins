@@ -53,8 +53,9 @@ tool called twice**:
 `stale_preview` means something changed after the preview: preview again. Every
 refusal's message says the next step — follow it; do not guess or retry blindly.
 
-`approve_campaign_step` is the one exception: call it once, with no preview. It records
-the approval at once, and only on the person's own yes.
+`approve_campaign_step` also takes the preview and the apply. The person's yes covers
+both: preview, then apply with the `fingerprint` in the same turn, without asking again.
+Call it only on the person's own yes.
 
 ## Approval gates
 When `get_campaign_status` shows `step` `awaiting_hero_approval` or
@@ -67,15 +68,15 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
 - Say the status `step_line` to the person.
 - At the hero gate, show the status `approval.hero_options` as a numbered list, with
   each option's `num`, what it is (its `style`) and its link: the Backstroke view uses
-  the same numbers. Where `source` says Backstroke made it, add "(Backstroke option)";
-  where it is the person's image, add "Yours". For example "3. Worn in use (Backstroke
-  option)", "5. Yours". At the
+  the same numbers. Add a label from `source`: `backstroke` is "(Backstroke option)",
+  `product_photo` is "(product photo)", `yours` is "Yours". For example "1. (product
+  photo)", "3. Worn in use (Backstroke option)", "5. Yours". At the
   email gate, show the email outline and the `app_url`.
 - Then **stop checking**. The person may approve in the Backstroke view in the chat. You then get
   a short message like "Approved hero 3": that approval is already recorded, so do not call
   `approve_campaign_step` for it. Resume checking.
 - In chat, approve only on the person's own words, through `approve_campaign_step`.
-  A plain yes counts as the approval: call it at once, with no preview. When the yes
+  A plain yes counts as the approval: preview and apply at once, without asking again. When the yes
   comes with a change ("looks good, but swap the second product"), edit first, then
   ask for the yes again.
   At the hero gate the `selection` is `{main_url, include_urls}` from the numbers they
@@ -186,7 +187,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    places. When they liked only some, pass those as `alternate_hero_image_urls` first.
    When the result says some options did not fit, ask which heroes to keep. With
    approval gates, do not call `create_campaign` with `build: true` to start the build
-   once the options are ready: the hero approval starts it. Without gates, build when
+   once the options are ready: the hero approval starts it (except when the person moves to only their own heroes,
+   as in Approval gates). Without gates, build when
    the options are ready.
 
 7. **Backstroke predictive subject lines.** With approval gates (the status has
