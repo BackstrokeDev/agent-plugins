@@ -28,7 +28,8 @@ yourself.** Fill every gap you can from the brand and the catalog, and ask the p
 only for what you cannot know, in one message: the audience, the hero link, and whether
 they have their own hero images. Two steps always wait for the person's explicit yes:
 the push to Klaviyo and the schedule. In review mode, two more steps wait: the hero approval and the email approval. Nothing else needs a yes. A built draft is a fine
-place to stop.
+place to stop. If the person says not to push, pass `push_to_klaviyo: false` to `create_campaign`: the
+campaign ends ready in Backstroke, and step 8 waits until they ask for the push.
 
 ## Tell the person what is happening
 - Before the first long step, say the plan and the assumptions you made (products, copy,
