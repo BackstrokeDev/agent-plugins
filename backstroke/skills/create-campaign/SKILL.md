@@ -118,7 +118,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
 
 4. **Make the campaign.** Preview `create_campaign` with `brief`, `product_urls`,
    `hero_copy` and any `audiences`, `hero_link_url` and `hero_image_url` the person
-   gave. When you ask the person anything before the options are made, ask about heroes in the same message: "Do you have your own hero
+   gave. If the brief names one audience to include and another not to include, and the lists can
+   overlap, ask once with the other build questions: "Should people on both lists get this?" When you ask the person anything before the options are made, ask about heroes in the same message: "Do you have your own hero
    images? Backstroke also makes hero options and sends each demographic cohort the one it
    predicts it will click. Backstroke draws the headline and button onto the image; if you want photos with no
    words on them, with the headline as normal text in the email under the photo, just say so." When they answer,
@@ -209,7 +210,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    one `{ subject, preview }`. Then give one recap: the approval mode
    (review or autonomous); the products and why each was
    picked; the offer and headline, marked "(I wrote these)" when you wrote them; the
-   heroes, as `get_campaign_status` gives them (below); the audience; the subject line
+   heroes, as `get_campaign_status` gives them (below); the audience, as the inclusion rule, the exclusions and
+   the eligible count together; the subject line
    Backstroke recommends and why; the links and the `app_url`; the preview's profile
    count and every warning in it. For the heroes, follow the status, not the brand.
    Say "Backstroke made these hero options" only when Backstroke made options. When the
