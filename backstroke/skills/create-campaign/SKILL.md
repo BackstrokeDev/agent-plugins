@@ -88,7 +88,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   "Asked Backstroke for more hero options" means the view already started them: do not
   call `generate_hero_images` for it.
 - While the step is `awaiting_hero_approval`, do not build: the hero approval starts the
-  build. When the person moves to only their own heroes, call `create_campaign` with
+  build. So ask every build question (the template too) before `generate_hero_images`,
+  never at the hero gate. When the person moves to only their own heroes, call `create_campaign` with
   `build: true` and `only_given_heroes`, and build at once.
 - When the person wants other heroes after the build, they pick again. The new
   approval rebuilds the email once by itself.
@@ -132,7 +133,9 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    let the person confirm or change them in one reply; they may pick more than one.
    When `create_campaign` refuses for audiences, use the names it gives. For the hero
    link, suggest a page ("Link the hero to [the featured product page], or another
-   page?") and use a link only after they say yes. Ask in one message, with the
+   page?") and use a link only after they say yes. The preview names the template and
+   the others; when the person wants another, pass it as `template_name`. Later builds,
+   and the build the hero approval starts, use it. Ask in one message, with the
    products and the brief. Then apply.
 
 5. **Backstroke hero options, on every campaign.** Right after the apply, call
