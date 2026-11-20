@@ -67,6 +67,8 @@ guess or retry blindly.
    the person named; otherwise ask both in one message: suggest a page ("Link the
    heroes to [the featured product page], or another page?") and an audience from
    `list_audiences` (most used first) to confirm or change. Use them only after a yes.
+   Ask which template to use in the same message, unless the brief names one, and set
+   `approval_mode` only as `create-campaign` says.
    Preview `create_campaign` with `build: false`, `hero_copy`, `hero_link_url`,
    `audiences` and the rest, then apply. With an existing draft, pass its
    `campaign_id` and only what changes.
@@ -119,11 +121,13 @@ guess or retry blindly.
 
 7. **Build.** As the result says, preview and apply `create_campaign` with the
    `campaign_id` and `build: true`. Check `get_campaign_status` as its text says until
-   `step` is `built`, then give the `app_url`.
+   `step` is `built` or `awaiting_email_approval`, then give the `app_url`.
 
-8. **Subject lines and push.** Continue with `create-campaign`'s Backstroke predictive
-   subject lines, recap and push steps, then its schedule step. Skip its hero options
-   step: the set is this email's heroes. The push and the schedule each need the
+8. **Email approval, subject lines and push.** Continue with `create-campaign` from
+   its wait for the build: the email approval when the status asks for it (its Approval
+   gates), then its Backstroke predictive subject lines, recap and push steps, then its
+   schedule step. Skip its hero options step and its hero approval: the set is this
+   email's heroes, and the person approved it in step 6. The push and the schedule each need the
    person's yes, as that skill says. For the heroes in the recap, say what the status
    gives. If the first product changes after the set was added, the set shows the old
    product. Do not call `generate_hero_images` (it is refused while a set owns the
