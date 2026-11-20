@@ -91,8 +91,11 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   call `generate_hero_images` for it.
 - While the step is `awaiting_hero_approval`, do not build: the hero approval starts the
   build. So ask every build question (the template too) before `generate_hero_images`,
-  never at the hero gate. When the person moves to only their own heroes, call `create_campaign` with
-  `build: true` and `only_given_heroes`, and build at once.
+  never at the hero gate. When the person wants only their own heroes, at the hero gate, call
+  `approve_campaign_step` with their heroes as the `selection` (their "Yours" numbers; `main_url`
+  alone for one hero for everyone). A new image they give at the gate is not an option yet: store it
+  with `create_campaign` first, then approve it. Before `generate_hero_images`, or after the options
+  failed, call `create_campaign` with `build: true` and `only_given_heroes` instead.
 - When the person wants other heroes after the build, they pick again. The new
   approval rebuilds the email once by itself.
 
@@ -195,8 +198,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    places. When they liked only some, pass those as `alternate_hero_image_urls` first.
    When the result says some options did not fit, ask which heroes to keep. With
    approval gates, do not call `create_campaign` with `build: true` to start the build
-   once the options are ready: the hero approval starts it (except when the person moves to only their own heroes,
-   as in Approval gates). Without gates, build when
+   once the options are ready: the hero approval starts it (for only their own heroes too, as in
+   Approval gates). Without gates, build when
    the options are ready.
 
 7. **Backstroke predictive subject lines.** With approval gates (the status has
@@ -208,7 +211,8 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    `subject_line_options` (Backstroke predictive subject lines, made for this brand's
    audience) with the one you recommend and why. When the person picks a number, call
    `pick_subject_line` with the `campaign_id` and that number: the Backstroke view uses the
-   same numbers and shows the pick. Never write your own subject lines;
+   same numbers and shows the pick. The view's chat line "Picked subject line N in the Backstroke view"
+   is a pick, not the yes to push: read `get_campaign_status` and go on to step 8. Never write your own subject lines;
    if the person gives one, use theirs as given.
 
 8. **One recap, then push to Klaviyo — needs a yes.** Preview

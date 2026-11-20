@@ -194,3 +194,15 @@ test("create-campaign reads the built email's outline against the brief; the sta
   for (const f of ["email_outline", "email_outline_omitted", "email_check", "approved_line"]) assert.ok(status.outputFields.includes(f), f);
   for (const f of ["email_outline", "email_check"]) assert.ok(status.untrustedFields.includes(f), f);
 });
+
+// Adam on ap#9 (11-20): at the hero gate create_campaign is held, so own heroes go through the approval;
+// a subject-line pick, typed or clicked in the view, is never the yes to push.
+test("create-campaign approves own heroes at the gate, and a subject pick is not the push yes", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  for (const line of [
+    "at the hero gate, call `approve_campaign_step` with their heroes as the `selection`",
+    "Before `generate_hero_images`, or after the options failed, call `create_campaign` with `build: true` and `only_given_heroes`",
+    "\"Picked subject line N in the Backstroke view\" is a pick, not the yes to push",
+  ]) assert.ok(skill.includes(line), line);
+  assert.ok(!skill.includes("call `create_campaign` with `build: true` and `only_given_heroes`, and build at once"));
+});
