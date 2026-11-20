@@ -183,7 +183,7 @@ test("create-campaign reads the built email's outline against the brief; the sta
     "give your own view of the `email_outline` against the brief",
     "Once `approved_line` names the email, never rebuild",
     "call `pick_subject_line` with the `campaign_id` and that number",
-    "No chat message comes",
+    "The view then sends a short chat line",
     "Check the hero copy with `hero_copy` (`placed` and `missing`), never with the outline",
     "cut from the outline, not from the email",
     "Tell the person what matched first",

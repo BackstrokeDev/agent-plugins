@@ -73,9 +73,9 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   `product_photo` is "(product photo)", `yours` is "Yours". For example "1. (product
   photo)", "3. Worn in use (Backstroke option)", "5. Yours". At the
   email gate, show the email outline and the `app_url`.
-- Then **stop checking**. The person may approve in the Backstroke view in the chat. No chat
-  message comes: the view and you are two separate callers. On the person's next message, read
-  `get_campaign_status` first. Its `approved_line` says what was approved, where and when: say it,
+- Then **stop checking**. The person may approve in the Backstroke view in the chat. The view
+  then sends a short chat line, such as "Approved the email". The view and you are two separate
+  callers, so on that line or the person's next message, read `get_campaign_status` first. Its `approved_line` says what was approved, where and when: say it,
   work from it, and do not call `approve_campaign_step` for it.
 - In chat, approve only on the person's own words, through `approve_campaign_step`.
   A plain yes counts as the approval: preview and apply at once, without asking again. When the yes
