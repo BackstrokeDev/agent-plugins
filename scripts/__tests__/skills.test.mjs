@@ -12,9 +12,9 @@ import { fixtureRoot } from "./fixtures.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const byName = (skills, n) => skills.find((s) => s.name === n);
 
-function liveCheck(tools) {
+function liveCheck(tools, beta) {
   const file = join(mkdtempSync(join(tmpdir(), "catalog-")), "catalog.json");
-  writeFileSync(file, JSON.stringify({ tools }));
+  writeFileSync(file, JSON.stringify(beta === undefined ? { tools } : { tools, beta }));
   return spawnSync("node", [join(root, "scripts", "check-live-catalog.mjs"), "--catalog", file], { encoding: "utf8" });
 }
 
@@ -51,6 +51,29 @@ test("the live check names a missing tool and exits 1", () => {
 test("the live check passes with a full catalog", () => {
   const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
   assert.equal(liveCheck(all).status, 0);
+});
+
+const loopTools = ["start_predictive_set", "add_set_to_campaign"];
+
+test("the live check passes a skill whose tools are only in beta, naming it", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  const r = liveCheck(all.filter((t) => !loopTools.includes(t)), loopTools);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /predictive-set/);
+});
+
+test("the live check fails a tool in neither tools nor beta, with today's message", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  const r = liveCheck(all.filter((t) => t !== "create_campaign"), loopTools);
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /tool "create_campaign" is not in the live catalog/);
+});
+
+test("the live check fails closed on a non-array beta", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  const r = liveCheck(all, "start_predictive_set");
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /beta is not an array/);
 });
 
 const ok = "name: a\ndescription: d";
@@ -214,4 +237,29 @@ test("create-campaign asks which template, unless the brief names one", () => {
     "the hero link, which template to use, and whether they have their own hero images",
     "When the brief names a template, use it and do not ask",
   ]) assert.ok(skill.includes(line), line);
+});
+
+function realSnapshotDrift(body) {
+  const r = fixtureRoot([["a", `name: a\ndescription: d\nhosts: [all]\nallowed-tools:\n  - start_predictive_set\n  - add_set_to_campaign`, body]]);
+  mkdirSync(join(r, "backstroke", "schema"), { recursive: true });
+  writeFileSync(join(r, "backstroke", "schema", "tools-snapshot.json"), readFileSync(join(root, "backstroke", "schema", "tools-snapshot.json")));
+  return spawnSync("node", [join(root, "scripts", "check-schema-drift.mjs"), r], { encoding: "utf8" });
+}
+
+test("drift check: the snapshot knows start_predictive_set and add_set_to_campaign", () => {
+  const r = realSnapshotDrift("Call `start_predictive_set`, then `add_set_to_campaign`.");
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test("drift check: a misspelled start_ or add_ tool in prose fails", () => {
+  const r = realSnapshotDrift("Call `start_predictive_sets`, then `add_sets_to_campaign`.");
+  assert.equal(r.status, 1);
+  assert.match(r.stdout + r.stderr, /start_predictive_sets/);
+  assert.match(r.stdout + r.stderr, /add_sets_to_campaign/);
+});
+
+test("predictive-set asks the own-hero question with the options-or-set question, never as a second one", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "predictive-set", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("ask the one question exactly as the `start_predictive_set` description words it"));
+  assert.ok(skill.includes("whether they have their own hero images, ask that in the same message, not as a second question"));
 });

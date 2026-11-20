@@ -79,6 +79,7 @@ you're ready. New here? Point your agent at **[`GETTING_STARTED.md`](./GETTING_S
 | `backstroke` | Entry point — picks the right recipe for the job. |
 | `update` | Update the plugin; check whether the installed skills are still in sync with the live MCP. |
 | `create-campaign` | Prompt → brief → built campaign with Backstroke hero options → subject lines → push to Klaviyo → schedule; push and schedule approved first. |
+| `predictive-set` | Ask for a predictive set → draft → Backstroke makes finished heroes scored for every cohort against your control → pick by number → add the set on a yes → build → subject lines and push via `create-campaign`. Accounts with predictive sets turned on. |
 | `subject-line-ab-optimizer` | Read a Klaviyo campaign → per-Cluster subject lines → approve → clone into variants. |
 | `hero-winner-picker` | Score candidate hero images for your audience → hand the winner to your email builder or ESP to build & send. |
 | `image-face-off` | Zero-setup: find the winning image among a few candidates, fast, against the global demographic cohorts. |
