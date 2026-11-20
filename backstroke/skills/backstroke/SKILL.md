@@ -55,15 +55,16 @@ with the live Backstroke MCP, run the **`update`** skill.
 **Klaviyo cluster — Backstroke's own Klaviyo round-trip:**
 `list_klaviyo_campaigns`, `read_campaign_content`, `list_clusters`, `list_audiences`, `push_subject_lines`.
 
-**Campaign flow:** `create_campaign` → `get_campaign_status` → `generate_subject_lines`
-→ `push_campaign_to_klaviyo` → `schedule_campaign`. Without the `campaign_id`, call
+**Campaign flow:** `create_campaign` → `get_campaign_status` → `approve_campaign_step`
+(when the campaign waits for the person) → `generate_subject_lines` (without
+approval gates) → `push_campaign_to_klaviyo` → `schedule_campaign`. Without the `campaign_id`, call
 `get_campaign_status` with the campaign's `name`.
 
 Every write (`create_campaign`, `push_subject_lines`, `push_campaign_to_klaviyo`,
 `schedule_campaign`) is one tool called twice: first without `fingerprint` (a preview
 that writes nothing), then with that `fingerprint`. `create_campaign` makes a
 Backstroke draft and applies without asking; the other three apply only after the
-user says yes.
+user says yes. `approve_campaign_step` previews and applies in one turn, on the person's yes.
 
 ## The one rule
 Any tool that **pushes to or sends from** a marketing account (`push_subject_lines`,

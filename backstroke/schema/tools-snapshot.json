@@ -1,9 +1,9 @@
 {
   "_comment": "Snapshot of the Backstroke MCP tool contract the skills depend on. Source of truth for the drift check. It mirrors the LIVE hosted endpoint's tools/list — NOT any server repo — so it is unaffected by the MCP source moving repos. IMPORTANT: regenerate against the env we SHIP against (prod). dev can lag prod (it did on 2026-07-20: dev returned no cross-system ids while prod did). `outputFields` are recorded only for tools whose prod response was observed, or whose source contract verifiedAgainst names — absent means not yet verified, not empty. `dailyLimit` is the default per-brand limit (an account can differ).",
   "endpoint": "https://mcp.backstroke.com/mcp",
-  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. generate_hero_images and get_campaign_status follow the BAC-3418 source and are not yet deployed. get_campaign_status email_outline is on prod from 2026-11-18 (backstroke#898). read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
-  "handAdded": "0.6.0 (BAC-3425), not yet verified against prod: start_predictive_set and add_set_to_campaign, get_campaign_status's include param and predictive_set field (its subfields and each hero's fields are flattened into its top-level outputFields), create_campaign's loop_pending and set_add_unfinished refusals, and start_predictive_set's hero_pinned_by_set refusal were added by hand from the Rails branch's final contract (config/mcp/copy.yml and config/mcp/schemas, 2026-11-16) before it merged. npm test checks tool names (allowed-tools and backticked verb_ tokens), not fields, so a wrong field here would not fail it. Regenerate against prod once those tools are live, before 0.6.0 is released.",
-  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find", "start", "add"],
+  "verifiedAgainst": "prod, 2026-11-13, after that day's Rails and MCP prod deploys: tool names match the live tool catalog; params, required inputs and refusals match the deployed source. generate_hero_images and get_campaign_status follow the BAC-3418 source and are not yet deployed. get_campaign_status email_outline is on prod from 2026-11-18 (backstroke#898). approve_campaign_step and the create_campaign approval_mode params follow the BAC-3450 source and are not yet deployed. read_campaign_content also returns a preview-text field; it is left out here so no doc names it.",
+  "handAdded": "next release after 0.6.0 (BAC-3425), not yet verified against prod: start_predictive_set and add_set_to_campaign, get_campaign_status's include param and predictive_set field (its subfields and each hero's fields are flattened into its top-level outputFields), create_campaign's loop_pending and set_add_unfinished refusals, and start_predictive_set's hero_pinned_by_set refusal were added by hand from the Rails branch's final contract (config/mcp/copy.yml and config/mcp/schemas, 2026-11-16) before it merged. npm test checks tool names (allowed-tools and backticked verb_ tokens), not fields, so a wrong field here would not fail it. Regenerate against prod once those tools are live, before that release.",
+  "verbPrefixes": ["list", "predict", "score", "get", "read", "push", "switch", "request", "preview", "create", "generate", "schedule", "find", "approve", "start", "add"],
   "tools": {
     "score_hero_generic": {
       "required": [],
@@ -68,10 +68,14 @@
     },
     "create_campaign": {
       "required": [],
-      "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "fingerprint"],
+      "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "approval_mode", "approval_mode_reason", "fingerprint"],
       "outputFields": ["campaign_id", "name", "status", "build_started", "build_skipped_reason", "products_added", "failed_urls", "app_url", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
-      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "loop_pending", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "stale_preview", "apply_in_progress", "apply_interrupted", "set_add_unfinished"],
+      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "loop_pending", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "email_approved", "stale_preview", "apply_in_progress", "apply_interrupted", "set_add_unfinished"],
       "dailyLimit": 20
+    },
+    "approve_campaign_step": {
+      "required": ["campaign_id", "gate"],
+      "params": ["campaign_id", "gate", "selection", "fingerprint"]
     },
     "find_products": {
       "required": [],
@@ -90,9 +94,9 @@
     "get_campaign_status": {
       "required": [],
       "params": ["campaign_id", "run_id", "name", "wait_seconds", "include"],
-      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "send_time", "running", "next_check", "app_url", "summary", "predictive_set", "verdict_kind", "verdict_headline", "round", "heroes_so_far", "estimate", "added", "heroes", "control", "more_available", "available", "stopped_reason", "number", "hero_id", "url", "label", "kind", "set_label", "cohorts", "people"],
+      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "email_check", "approved_line", "send_time", "running", "next_check", "app_url", "summary", "predictive_set", "verdict_kind", "verdict_headline", "round", "heroes_so_far", "estimate", "added", "heroes", "control", "more_available", "available", "stopped_reason", "number", "hero_id", "url", "label", "kind", "set_label", "cohorts", "people"],
       "refusals": ["not_found", "invalid_request", "ambiguous_name"],
-      "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline"]
+      "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline", "email_check"]
     },
     "generate_subject_lines": {
       "required": [],
@@ -101,6 +105,13 @@
       "refusals": ["invalid_request", "invalid_cluster", "not_found", "unsupported_audience_mode", "not_built", "already_generating_subjects", "already_pushed", "lists_segments_disabled", "no_audience", "start_failed", "vision_failed", "generation_failed"],
       "dailyLimit": 40,
       "untrustedFields": ["subject_line_options"]
+    },
+    "pick_subject_line": {
+      "required": ["campaign_id", "number"],
+      "params": ["campaign_id", "number"],
+      "outputFields": ["campaign_id", "number", "subject", "preview", "summary"],
+      "refusals": ["not_found", "not_ready", "no_option"],
+      "untrustedFields": ["subject", "preview"]
     },
     "push_campaign_to_klaviyo": {
       "required": ["campaign_id", "selected_subjects"],
