@@ -206,3 +206,12 @@ test("create-campaign approves own heroes at the gate, and a subject pick is not
   ]) assert.ok(skill.includes(line), line);
   assert.ok(!skill.includes("call `create_campaign` with `build: true` and `only_given_heroes`, and build at once"));
 });
+
+// Owen 11-20: the agent always settles the template before the build: it asks, unless the brief names one.
+test("create-campaign asks which template, unless the brief names one", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  for (const line of [
+    "the hero link, which template to use, and whether they have their own hero images",
+    "When the brief names a template, use it and do not ask",
+  ]) assert.ok(skill.includes(line), line);
+});

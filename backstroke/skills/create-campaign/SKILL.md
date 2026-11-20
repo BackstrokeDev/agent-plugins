@@ -26,8 +26,8 @@ allowed-tools:
 
 Take one prompt to a built email in Klaviyo, scheduled to send. **Run on by
 yourself.** Fill every gap you can from the brand and the catalog, and ask the person
-only for what you cannot know, in one message: the audience, the hero link, and whether
-they have their own hero images. Two steps always wait for the person's explicit yes:
+only for what you cannot know, in one message: the audience, the hero link, which template to use,
+and whether they have their own hero images. Two steps always wait for the person's explicit yes:
 the push to Klaviyo and the schedule. In review mode, two more steps wait: the hero approval and the email approval. Nothing else needs a yes. A built draft is a fine
 place to stop.
 
@@ -138,8 +138,9 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    let the person confirm or change them in one reply; they may pick more than one.
    When `create_campaign` refuses for audiences, use the names it gives. For the hero
    link, suggest a page ("Link the hero to [the featured product page], or another
-   page?") and use a link only after they say yes. The preview names the template and
-   the others; when the person wants another, pass it as `template_name`. Later builds,
+   page?") and use a link only after they say yes. Ask which template to use: the preview
+   names the newest template and the others. When the brief names a template, use it and do not ask.
+   Pass the template as `template_name`. Later builds,
    and the build the hero approval starts, use it. Ask in one message, with the
    products and the brief. Then apply.
 
