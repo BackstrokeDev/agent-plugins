@@ -105,11 +105,10 @@ guess or retry blindly.
    its order: keep the control (`create_campaign` with `campaign_id`, the
    `hero_image_url` the status names, `build: true`, `only_given_heroes: true`, then on
    through steps 7 and 8), or add the set (step 6).
-   Do not push the set.
+   Do not press the person to add the set.
 
 6. **Preview the add, then wait for a yes.** Preview `add_set_to_campaign` with the
-   `run_id`, `campaign_id` and `hero_ids`: the `hero_id` of each chosen number (at
-   most 9). Then say, from the preview: its `verdict_headline`, and its opt-in line when
+   `run_id`, `campaign_id` and `hero_ids`: the `hero_id` of each chosen number. Then say, from the preview: its `verdict_headline`, and its opt-in line when
    there is one; each hero's number and label as it gives them, and how many; any hero
    `left_out` (it would get no cohort); its control line as given (where the control
    goes, or that every cohort gets a hero); the link; that it replaces the draft's own
@@ -130,8 +129,8 @@ guess or retry blindly.
    email's heroes, and the person approved it in step 6. The push and the schedule each need the
    person's yes, as that skill says. For the heroes in the recap, say what the status
    gives. If the first product changes after the set was added, the set shows the old
-   product. Do not call `generate_hero_images` (it is refused while a set owns the
-   hero). Offer a new draft with a new predictive set, or removing the set in
+   product: do not call `generate_hero_images` (it is refused while a set owns the
+   hero), and offer a new draft with a new predictive set, or removing the set in
    Backstroke and then hero options through `create-campaign`.
 
 ## When it doesn't go as planned
