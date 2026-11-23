@@ -34,6 +34,7 @@ with the live Backstroke MCP, run the **`update`** skill.
 | The user wants to… | Use skill | Writes? |
 |---|---|---|
 | Make a new campaign from a prompt — brief, build, subject lines, push, schedule | **`create-campaign`** | Yes — Backstroke + Klaviyo (gated) |
+| A predictive set: finished heroes with the headline on them, scored for every cohort against the control, added to a campaign | **`predictive-set`** | Yes — Backstroke (adding the set is gated) |
 | Get stronger, Cluster-tailored subject lines for an existing Klaviyo campaign, set up as A/B variants | **`subject-line-ab-optimizer`** | Yes — Klaviyo (gated) |
 | Just see subject-line ideas for pasted email copy (no campaign, no write) | call `generate_subject_lines` with the copy | No |
 | Pick the winning hero image among candidates and build/send it in another tool | **`hero-winner-picker`** | No (hand-off is a write — gated) |

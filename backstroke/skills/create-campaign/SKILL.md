@@ -162,7 +162,10 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
    person, score the options with `score_hero_generic` and use its `best` (if it is
    pending, check `get_hero_scores` as its text says). If the
    options fail, try once more; if they fail again, tell the person: the email builds
-   with their heroes or one hero, and they can send their own hero to swap in. For hero options with no email, call
+   with their heroes or one hero, and they can send their own hero to swap in. When the person asks only
+   for hero images, names neither hero options nor a predictive set, and `start_predictive_set` is
+   available, first ask the one question its description gives and make nothing until they answer; a
+   predictive set goes to `predictive-set`. Never ask it for a campaign prompt: that gets hero options. For hero options with no email, call
    `generate_hero_images` without `campaign_id`, then `get_campaign_status` with the
    `run_id`; to use a run's options in an email, pass the chosen option URL as
    `create_campaign` `hero_image_url` and the others as `alternate_hero_image_urls`. Pass `only_given_heroes: true` only when
@@ -282,4 +285,5 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   `subject-line-ab-optimizer`.
 - Pick one hero from candidate images first → `hero-winner-picker`, then pass the
   winning image link as `hero_image_url`.
+- A predictive set, when the person asks for one or picks it when asked → `predictive-set`.
 - Not connected / 401 → run `setup` first.
