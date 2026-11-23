@@ -10,6 +10,15 @@ invisible until someone names it).
   (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
   on the cohort-id dynamic-string generator being exposed as an MCP tool.
 
+## 0.6.1
+- **The Backstroke view opens in the side panel** — where your chat app has one, the
+  view opens beside the chat, so the progress and the hero options stay in sight. The
+  agent keeps its reply to one short line while the view is open.
+- **You see who picked the control** — Backstroke picks the control hero for you. The
+  view and the agent say so, and tell you how to pick another one or send no control group.
+- **After an update, refresh the tool list** — in Claude, open Customize → Connectors →
+  Backstroke, press Refresh Tool List, then start a new chat. A new chat alone is not enough.
+
 ## 0.6.0
 - **The agent stops for you at the hero and the email** — in review mode, it shows your
   hero options and then the built email, and waits for your yes before it goes on. You

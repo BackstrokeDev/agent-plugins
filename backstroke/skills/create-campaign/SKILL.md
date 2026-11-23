@@ -67,11 +67,15 @@ When `get_campaign_status` shows `step` `awaiting_hero_approval` or
   the person asks to see the view again. While the view is open, say one short line per
   step and do not repeat what it shows.
 - Say the status `step_line` to the person.
-- At the hero gate, show the status `approval.hero_options` as a numbered list, with
+- At the hero gate, if the Backstroke view is open in this chat, it shows the options:
+  say so in one line and do not list them. Otherwise show the status
+  `approval.hero_options` as a numbered list, with
   each option's `num`, what it is (its `style`) and its link: the Backstroke view uses
   the same numbers. Add a label from `source`: `backstroke` is "(Backstroke option)",
   `product_photo` is "(product photo)", `yours` is "Yours". For example "1. (product
-  photo)", "3. Worn in use (Backstroke option)", "5. Yours". At the
+  photo)", "3. Worn in use (Backstroke option)", "5. Yours". When the status says
+  "Backstroke picked the control hero", tell the person, and say that they can star
+  another hero or ask for no control group. At the
   email gate, show the email outline and the `app_url`.
 - Then **stop checking**. The person may approve in the Backstroke view in the chat. The view
   then sends a short chat line, such as "Approved the email". The view and you are two separate
