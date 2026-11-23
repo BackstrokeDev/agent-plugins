@@ -62,6 +62,16 @@ URL changes (rare). Full quit + reopen after any edit.
 Steps 2 and 3 below (sync check + what's new) apply on Desktop either way — the server
 can move under you regardless of client.
 
+### Refresh the tool list (claude.ai, Desktop, mobile)
+Claude keeps the Backstroke tool list it read when you connected. It does not read the
+list again by itself, and a new chat alone is not enough. After every Backstroke release:
+
+1. Open **Customize → Connectors → Backstroke** and press **Refresh Tool List**. (Or
+   disconnect and connect again.)
+2. Start a **new chat**.
+
+Until then, new tools are missing and the Backstroke view may not open.
+
 ## 2. Check the skills are still in sync with the live MCP
 
 This is the part unique to a remote MCP: even on the latest plugin, the *server* may
@@ -119,5 +129,6 @@ cat "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json"    # version bumped?
 Plugins, and that the server is connected, after the full quit + reopen.
 
 Either way, run a harmless read call (e.g. `list_clusters`) to confirm the MCP still
-answers, and that any newly-added tools now appear. If a tool call still misbehaves after
+answers, and that any newly-added tools now appear. If a new tool is missing, refresh the
+tool list (step 1) and start a new chat. If a tool call still misbehaves after
 updating, the server may be mid-change — retry shortly, or report it to Backstroke.
