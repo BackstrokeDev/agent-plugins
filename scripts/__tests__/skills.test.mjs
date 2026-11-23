@@ -263,3 +263,10 @@ test("predictive-set asks the own-hero question with the options-or-set question
   assert.ok(skill.includes("ask the one question exactly as the `start_predictive_set` description words it"));
   assert.ok(skill.includes("whether they have their own hero images, ask that in the same message, not as a second question"));
 });
+
+test("create-campaign asks options-or-set on a bare hero ask, never on a campaign prompt, and hands off to predictive-set", () => {
+  const skill = readFileSync(join(root, "backstroke", "skills", "create-campaign", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes("first ask the one question its description gives and make nothing until they answer"));
+  assert.ok(skill.includes("Never ask it for a campaign prompt: that gets hero options."));
+  assert.ok(skill.includes("picks it when asked → `predictive-set`"));
+});
