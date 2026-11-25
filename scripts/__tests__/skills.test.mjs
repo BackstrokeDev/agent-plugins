@@ -53,6 +53,19 @@ test("the live check passes with a full catalog", () => {
   assert.equal(liveCheck(all).status, 0);
 });
 
+test("the live check accepts a gated tool that is absent from the catalog", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  assert.equal(liveCheck(all.filter((t) => t !== "create_surge")).status, 0);
+});
+
+test("the live check still fails an unknown tool when a gated tool is absent", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  const r = liveCheck(all.filter((t) => t !== "create_surge" && t !== "create_campaign"));
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /create_campaign/);
+  assert.doesNotMatch(r.stderr, /create_surge/);
+});
+
 const ok = "name: a\ndescription: d";
 process.env.GITHUB_SHA = "abc";
 

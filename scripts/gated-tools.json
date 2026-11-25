@@ -1,0 +1,4 @@
+{
+  "comment": "Tools gated per account, so the public catalog omits them. Remove a tool when it is released to everyone.",
+  "tools": ["create_surge"]
+}

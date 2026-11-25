@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Fail when a published skill names a tool the live catalog lacks.
+// A tool in scripts/gated-tools.json may be absent from the catalog.
 // Usage: check-live-catalog.mjs [--catalog <file>]   (default: GET TOOL_CATALOG_URL)
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -7,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { buildBundle } from "./build-skills-bundle.mjs";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const gated = new Set(JSON.parse(readFileSync(join(repoRoot, "scripts", "gated-tools.json"), "utf8")).tools);
 const url = process.env.TOOL_CATALOG_URL || "https://mcp.backstroke.com/tool-catalog";
 
 async function loadCatalog() {
@@ -23,7 +25,7 @@ try {
   const live = new Set(tools);
   const missing = [];
   for (const s of buildBundle(repoRoot).skills) {
-    for (const t of s.allowed_tools) if (!live.has(t)) missing.push(`${s.name}: tool "${t}" is not in the live catalog`);
+    for (const t of s.allowed_tools) if (!live.has(t) && !gated.has(t)) missing.push(`${s.name}: tool "${t}" is not in the live catalog`);
   }
   if (missing.length) {
     console.error(missing.join("\n"));
