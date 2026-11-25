@@ -27,7 +27,7 @@ writes a block to the Klaviyo library; it never sends anything.
   bar against it.
 
 **When NOT to use this**
-- The person only wants to know which hero wins, with no block → `hero-winner-picker`
+- The person only wants to know which hero scores highest, with no block → `hero-winner-picker`
   (their audience) or `image-face-off` (zero setup).
 - The person wants a whole campaign made from a prompt → `create-campaign`.
 - The campaign was made in Backstroke → `create-campaign` (its hero gate).
@@ -50,7 +50,7 @@ writes a block to the Klaviyo library; it never sends anything.
      `upload_ids`. Do not score the files to get their URLs. The uploaded images come
      first, in upload order. With no `control_image_url` and no draft campaign, the
      first image is the control. With a draft campaign, the control is the campaign
-     email's current hero (the default). A control the person names wins over it. A
+     email's current hero (the default). A control the person names takes priority over it. A
      draft campaign gives the audience and the control, never the candidates.
    - `link_url`: the page the hero links to. Required. Suggest a page; use it only
      after the person says yes.
