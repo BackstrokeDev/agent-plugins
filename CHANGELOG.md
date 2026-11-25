@@ -19,6 +19,12 @@ invisible until someone names it).
 - **Hands off when you ask** — say "just do it", "do not ask me anything" or "run it
   yourself", and it runs the whole campaign without these stops. The push to Klaviyo and
   the schedule still wait for your yes.
+- **It asks which template** — unless your brief names one. Name the template in the
+  brief and it uses it without a question.
+- **A subject-line pick is not a push** — picking a line by number only saves it. The
+  agent then shows what it will push to Klaviyo and waits for your yes.
+- **Your own heroes at the hero stop** — your images show under "Yours" next to
+  Backstroke's options, and you can approve one of yours there.
 
 ## 0.5.1
 - **The agent checks the built email** — after the build, it compares the email with

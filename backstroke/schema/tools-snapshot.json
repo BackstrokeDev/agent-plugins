@@ -69,7 +69,7 @@
       "required": [],
       "params": ["brief", "name", "campaign_id", "product_urls", "hero_image_url", "upload_id", "alternate_hero_image_urls", "only_given_heroes", "control_group", "hero_link_url", "hero_copy", "audiences", "exclude_audiences", "template_name", "build", "saved_rows", "approval_mode", "approval_mode_reason", "fingerprint"],
       "outputFields": ["campaign_id", "name", "status", "build_started", "build_skipped_reason", "products_added", "failed_urls", "app_url", "replayed", "warnings", "fingerprint", "stage", "diff", "summary"],
-      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "stale_preview", "apply_in_progress", "apply_interrupted"],
+      "refusals": ["invalid_request", "not_found", "unsupported_audience_mode", "unknown_audience", "ambiguous_audience", "klaviyo_unavailable", "klaviyo_disconnected", "no_template", "unknown_template", "too_many_page_urls", "already_generating", "already_pushed", "hero_pinned_by_set", "lists_segments_disabled", "predictive_hero_not_enabled", "cohorts_not_ready", "email_approved", "stale_preview", "apply_in_progress", "apply_interrupted"],
       "dailyLimit": 20
     },
     "approve_campaign_step": {
@@ -93,9 +93,9 @@
     "get_campaign_status": {
       "required": [],
       "params": ["campaign_id", "run_id", "name", "wait_seconds"],
-      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "send_time", "running", "next_check", "app_url", "summary"],
+      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "email_check", "approved_line", "send_time", "running", "next_check", "app_url", "summary"],
       "refusals": ["not_found", "invalid_request", "ambiguous_name"],
-      "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline"]
+      "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline", "email_check"]
     },
     "generate_subject_lines": {
       "required": [],
@@ -104,6 +104,13 @@
       "refusals": ["invalid_request", "invalid_cluster", "not_found", "unsupported_audience_mode", "not_built", "already_generating_subjects", "already_pushed", "lists_segments_disabled", "no_audience", "start_failed", "vision_failed", "generation_failed"],
       "dailyLimit": 40,
       "untrustedFields": ["subject_line_options"]
+    },
+    "pick_subject_line": {
+      "required": ["campaign_id", "number"],
+      "params": ["campaign_id", "number"],
+      "outputFields": ["campaign_id", "number", "subject", "preview", "summary"],
+      "refusals": ["not_found", "not_ready", "no_option"],
+      "untrustedFields": ["subject", "preview"]
     },
     "push_campaign_to_klaviyo": {
       "required": ["campaign_id", "selected_subjects"],
