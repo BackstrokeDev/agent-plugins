@@ -73,12 +73,17 @@ block to the Klaviyo library; it never sends anything.
    `next_check` gives the arguments). While it runs, tell the person the phase:
    `audience` (Klaviyo is loading the list; a large list takes up to about 15 minutes),
    `images` (reading the images), or `scoring`. Say it again only when the phase
-   changes. Offer `open_app` with `surge_run_id` if the person wants to see the run.
+   changes.
+
+   In a host that shows apps, the `create_surge` apply result opens the Backstroke
+   view, and the view follows the run by itself. Do not ask the person first. If no
+   view opened, call `open_app` with `surge_run_id` at once.
 
 5. **Report the outcome in plain words.**
-   - `routed`: the block is in the Klaviyo library. Give its name and tell the person
-     to drag it into the email. Each cohort gets its winning image; everyone else gets
-     the block's default image. Cohort tags sync to Klaviyo later.
+   - `routed`: the block is in the Klaviyo library. Give its name and its Klaviyo
+     link, and tell the person to drag it into the email. Each cohort gets its winning
+     image; everyone else gets the block's default image. Cohort tags sync to Klaviyo
+     later. Do not list every cohort; give the count and the winning images.
    - `no_winner`: the control stays best. No block was made.
    - `control_unscored`: the control could not be scored, so there is nothing to
      compare against. Say so and offer a different control.
