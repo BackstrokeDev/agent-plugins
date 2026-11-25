@@ -5,10 +5,11 @@ you** — not a dev diff. The `update` skill surfaces new entries after you upda
 so every release is a chance to discover what you can now do (a new capability is
 invisible until someone names it).
 
-## Unreleased — on the way
-- **Predictive hero A/B test** — prove it: A/B test the per-cohort predictive hero
-  (each cohort sees its own winning hero) against a static control, in Klaviyo. Waiting
-  on the cohort-id dynamic-string generator being exposed as an MCP tool.
+## Unreleased
+- **Surge: each cohort gets its best of your heroes, in one Klaviyo block** — give the
+  agent your hero images (or a draft Klaviyo campaign) and a link. It scores them
+  against a control and builds one universal block in your Klaviyo library for you to
+  drag into the email. Turned on per account; it asks for your yes before it writes.
 
 ## 0.6.0
 - **The agent stops for you at the hero and the email** — in review mode, it shows your

@@ -38,12 +38,7 @@ with the live Backstroke MCP, run the **`update`** skill.
 | Just see subject-line ideas for pasted email copy (no campaign, no write) | call `generate_subject_lines` with the copy | No |
 | Pick the winning hero image among candidates and build/send it in another tool | **`hero-winner-picker`** | No (hand-off is a write — gated) |
 | Quickly find the winning image among a few candidates, zero account setup | **`image-face-off`** | No |
-
-**Planned — not yet available**
-- **Predictive hero A/B test** — A/B test the *per-demographic-cohort* predictive hero (each demographic cohort
-  sees its own winning hero) against a static control, in Klaviyo. Blocked: needs the
-  demographic-cohort-id **dynamic-string generator exposed as an MCP tool**, plus a template-insert
-  path.
+| Give each demographic cohort its best of their own hero images through one Klaviyo universal block, scored against a control | **`surge`** | Yes — Klaviyo block (gated) |
 
 ## The tool surface (what Backstroke exposes)
 
@@ -59,15 +54,18 @@ with the live Backstroke MCP, run the **`update`** skill.
 approval gates) → `push_campaign_to_klaviyo` → `schedule_campaign`. Without the `campaign_id`, call
 `get_campaign_status` with the campaign's `name`.
 
-Every write (`create_campaign`, `push_subject_lines`, `push_campaign_to_klaviyo`,
+**Surge:** `create_surge` → `get_campaign_status` with the `surge_run_id` (one Klaviyo
+universal block; each cohort gets its best of the person's heroes).
+
+Every write (`create_campaign`, `create_surge`, `push_subject_lines`, `push_campaign_to_klaviyo`,
 `schedule_campaign`) is one tool called twice: first without `fingerprint` (a preview
 that writes nothing), then with that `fingerprint`. `create_campaign` makes a
-Backstroke draft and applies without asking; the other three apply only after the
+Backstroke draft and applies without asking; `create_surge` and the other three apply only after the
 user says yes. `approve_campaign_step` previews and applies in one turn, on the person's yes.
 
 ## The one rule
 Any tool that **pushes to or sends from** a marketing account (`push_subject_lines`,
-`push_campaign_to_klaviyo`, `schedule_campaign`, or a hand-off to another MCP's
+`push_campaign_to_klaviyo`, `create_surge`, `schedule_campaign`, or a hand-off to another MCP's
 send/schedule tool)
 runs **only after the user has reviewed and approved the exact content**.
 `schedule_campaign` sends to real people and can't be undone: apply it only after an
