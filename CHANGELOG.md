@@ -6,10 +6,12 @@ so every release is a chance to discover what you can now do (a new capability i
 invisible until someone names it).
 
 ## Unreleased
-- **Surge: each cohort gets its best of your heroes, in one Klaviyo block** — give the
-  agent your hero images (or a draft Klaviyo campaign) and a link. It scores them
-  against a control and builds one universal block in your Klaviyo library for you to
-  drag into the email. Turned on per account; it asks for your yes before it writes.
+- **Surge: each cohort routed to an image, in one Klaviyo block** — give the agent your
+  hero images, a link, and a draft Klaviyo campaign or the audience. Backstroke scores
+  them against your control and, where one clears the bar, builds one universal block in
+  your Klaviyo library to drag in place of the control. With a campaign there is one
+  block per campaign, updated on each run. The first load of a large list takes about 15
+  minutes. Turned on per account; it asks for your yes before it writes.
 
 ## 0.6.0
 - **The agent stops for you at the hero and the email** — in review mode, it shows your

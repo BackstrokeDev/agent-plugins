@@ -98,10 +98,10 @@
       "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline", "email_check"]
     },
     "create_surge": {
-      "required": ["link_url"],
+      "required": [],
       "params": ["hero_image_urls", "upload_ids", "control_image_url", "link_url", "klaviyo_campaign_id", "audiences", "exclude_audiences", "name", "fingerprint"],
-      "outputFields": ["surge_run_id", "control_source", "next_check", "fingerprint", "replayed", "warnings", "diff", "summary"],
-      "refusals": ["not_enabled", "invalid_request", "not_found", "campaign_not_draft", "no_images", "unknown_audience", "ambiguous_audience", "cohorts_not_ready", "klaviyo_unavailable", "klaviyo_disconnected", "audiences_with_campaign", "stale_preview"]
+      "outputFields": ["surge_run_id", "control_source", "next_check", "fingerprint", "replayed", "warnings", "left_out", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "campaign_not_draft", "no_images", "unknown_audience", "ambiguous_audience", "cohorts_not_ready", "klaviyo_unavailable", "klaviyo_disconnected", "stale_preview", "apply_in_progress", "apply_interrupted"]
     },
     "generate_subject_lines": {
       "required": [],
