@@ -77,9 +77,10 @@ block to the Klaviyo library; it never sends anything.
    `images` (reading the images), or `scoring`. Say it again only when the phase
    changes.
 
-   In a host that shows apps, the `create_surge` apply result opens the Backstroke
-   view, and the view follows the run by itself. Do not ask the person first. If no
-   view opened, call `open_app` with `surge_run_id` at once.
+   In a host that shows apps, the `create_surge` result opens the Backstroke view, and
+   the view follows the run by itself. Do not call `open_app` after `create_surge`:
+   it opens a second view. Call `open_app` with `surge_run_id` only when the person
+   asks to see the view again.
 
 5. **Report the outcome in plain words.**
    - `routed`: the block is in the Klaviyo library. Give its name and its Klaviyo
