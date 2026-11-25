@@ -67,9 +67,9 @@ writes a block to the Klaviyo library; it never sends anything.
      `first_image` is the first image they gave;
    - the **candidates**;
    - the **audience**;
-   - the **block name** (`diff.block_name`). With a Klaviyo campaign it is exactly
-     "Surge: <campaign name>": one block per campaign, updated on each run. Without a
-     campaign, `block_numbered` is true and Backstroke adds the run number;
+   - the **block name**: show `diff.block_name` as it is. Only when
+     `diff.block_numbered` is true, say that Backstroke adds the run number. With a
+     Klaviyo campaign there is one block per campaign, updated on each run;
    - **how many cohorts** will be scored.
    If the audience is a large Klaviyo list, say up front that the first load takes
    about 15 minutes.

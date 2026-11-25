@@ -228,3 +228,11 @@ test("create-campaign asks which template, unless the brief names one", () => {
     "When the brief names a template, use it and do not ask",
   ]) assert.ok(skill.includes(line), line);
 });
+
+test("surge skill shows block_name as is and adds the run number only when block_numbered", () => {
+  const t = readFileSync(join(root, "backstroke", "skills", "surge", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(t.includes("show `diff.block_name` as it is"));
+  assert.ok(t.includes("Only when `diff.block_numbered` is true, say that Backstroke adds the run number"));
+  assert.ok(!t.includes("it is exactly"));
+  assert.ok(!t.includes("Without a campaign, `block_numbered` is true"));
+});
