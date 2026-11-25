@@ -80,9 +80,10 @@ block to the Klaviyo library; it never sends anything.
    view opened, call `open_app` with `surge_run_id` at once.
 
 5. **Report the outcome in plain words.**
-   - `routed`: the block is in the Klaviyo library. Give its name and tell the person
-     to drag it into the email. Each cohort gets its winning image; everyone else gets
-     the block's default image. Cohort tags sync to Klaviyo later.
+   - `routed`: the block is in the Klaviyo library. Give its name and its Klaviyo
+     link, and tell the person to drag it into the email. Each cohort gets its winning
+     image; everyone else gets the block's default image. Cohort tags sync to Klaviyo
+     later. Do not list every cohort; give the count and the winning images.
    - `no_winner`: the control stays best. No block was made.
    - `control_unscored`: the control could not be scored, so there is nothing to
      compare against. Say so and offer a different control.
