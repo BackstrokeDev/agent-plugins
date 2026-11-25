@@ -236,3 +236,10 @@ test("surge skill shows block_name as is and adds the run number only when block
   assert.ok(!t.includes("it is exactly"));
   assert.ok(!t.includes("Without a campaign, `block_numbered` is true"));
 });
+
+test("surge skill: a surged campaign gets no second block and no re-run", () => {
+  const t = readFileSync(join(root, "backstroke", "skills", "surge", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(t.includes("A Klaviyo campaign gets one Surge block only"));
+  assert.ok(t.includes("the campaign already has a Surge block"));
+  assert.ok(!t.includes("updated on each run"));
+});

@@ -68,8 +68,8 @@ writes a block to the Klaviyo library; it never sends anything.
    - the **candidates**;
    - the **audience**;
    - the **block name**: show `diff.block_name` as it is. Only when
-     `diff.block_numbered` is true, say that Backstroke adds the run number. With a
-     Klaviyo campaign there is one block per campaign, updated on each run;
+     `diff.block_numbered` is true, say that Backstroke adds the run number. A
+     Klaviyo campaign gets one Surge block only;
    - **how many cohorts** will be scored.
    If the audience is a large Klaviyo list, say up front that the first load takes
    about 15 minutes.
@@ -121,6 +121,9 @@ Every refusal says its next step. Follow it. Handle these in plain words:
   drop the audiences.
 - `unknown_audience` / `ambiguous_audience`: ask which one they mean.
 - `campaign_not_draft`: the campaign is sent or archived. Ask for a draft campaign.
+- A message that says the campaign already has a Surge block (arrives as
+  `invalid_request`): Backstroke does not make a second one. Point to the Backstroke
+  app, or offer Surge without a campaign for a new block.
 - `no_images`: no image could be used. Ask for other images.
 - `cohorts_not_ready`: the account's cohorts are not ready yet. Say so.
 - `klaviyo_unavailable`: try again later.
