@@ -41,10 +41,12 @@ block to the Klaviyo library; it never sends anything.
 ## Steps
 
 1. **Gather what is missing.** Ask only for what you do not have, in one message:
-   - `hero_image_urls`: 1-10 public image URLs. For image files, call
-     `request_image_upload` and upload as its text says, then use the image URLs it
-     returns. With a draft campaign and no `control_image_url`, the control is the
-     campaign email's current hero.
+   - The images, 1-10: public URLs in `hero_image_urls`, or image files through
+     `request_image_upload`. Upload as its text says, then pass its `upload_id` in
+     `upload_ids`. Do not score the files to get their URLs. The uploaded images come
+     first, in upload order. With no `control_image_url` and no draft campaign, the
+     first image is the control. With a draft campaign, the control is the campaign
+     email's current hero.
    - `link_url`: the page the hero links to. Required. Suggest a page; use it only
      after the person says yes.
    - **A draft Klaviyo campaign or audiences, not both.** For a campaign, find its id
