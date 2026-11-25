@@ -53,6 +53,19 @@ test("the live check passes with a full catalog", () => {
   assert.equal(liveCheck(all).status, 0);
 });
 
+test("the live check accepts a gated tool that is absent from the catalog", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  assert.equal(liveCheck(all.filter((t) => t !== "create_surge")).status, 0);
+});
+
+test("the live check still fails an unknown tool when a gated tool is absent", () => {
+  const all = buildBundle(root).skills.flatMap((s) => s.allowed_tools);
+  const r = liveCheck(all.filter((t) => t !== "create_surge" && t !== "create_campaign"));
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /create_campaign/);
+  assert.doesNotMatch(r.stderr, /create_surge/);
+});
+
 const ok = "name: a\ndescription: d";
 process.env.GITHUB_SHA = "abc";
 
@@ -214,4 +227,19 @@ test("create-campaign asks which template, unless the brief names one", () => {
     "the hero link, which template to use, and whether they have their own hero images",
     "When the brief names a template, use it and do not ask",
   ]) assert.ok(skill.includes(line), line);
+});
+
+test("surge skill shows block_name as is and adds the run number only when block_numbered", () => {
+  const t = readFileSync(join(root, "backstroke", "skills", "surge", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(t.includes("show `diff.block_name` as it is"));
+  assert.ok(t.includes("Only when `diff.block_numbered` is true, say that Backstroke adds the run number"));
+  assert.ok(!t.includes("it is exactly"));
+  assert.ok(!t.includes("Without a campaign, `block_numbered` is true"));
+});
+
+test("surge skill: a surged campaign gets no second block and no re-run", () => {
+  const t = readFileSync(join(root, "backstroke", "skills", "surge", "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(t.includes("A Klaviyo campaign gets one Surge block only"));
+  assert.ok(t.includes("the campaign already has a Surge block"));
+  assert.ok(!t.includes("updated on each run"));
 });

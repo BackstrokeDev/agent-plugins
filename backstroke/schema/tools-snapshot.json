@@ -92,10 +92,16 @@
     },
     "get_campaign_status": {
       "required": [],
-      "params": ["campaign_id", "run_id", "name", "wait_seconds"],
-      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "email_check", "approved_line", "send_time", "running", "next_check", "app_url", "summary"],
+      "params": ["campaign_id", "run_id", "surge_run_id", "name", "wait_seconds"],
+      "outputFields": ["campaign_id", "run_id", "name", "status", "step", "error_message", "error_count", "products", "subject_line_options", "klaviyo_campaigns", "hero_routing", "hero_selection", "hero_images", "hero_copy", "saved_rows", "email_outline", "email_outline_omitted", "email_check", "approved_line", "send_time", "running", "next_check", "app_url", "summary", "phase", "outcome", "retryable"],
       "refusals": ["not_found", "invalid_request", "ambiguous_name"],
       "untrustedFields": ["subject_line_options", "products", "saved_rows", "email_outline", "email_check"]
+    },
+    "create_surge": {
+      "required": [],
+      "params": ["hero_image_urls", "upload_ids", "control_image_url", "link_url", "klaviyo_campaign_id", "audiences", "exclude_audiences", "name", "fingerprint"],
+      "outputFields": ["surge_run_id", "control_source", "next_check", "fingerprint", "replayed", "warnings", "left_out", "stage", "diff", "summary"],
+      "refusals": ["invalid_request", "not_found", "campaign_not_draft", "no_images", "unknown_audience", "ambiguous_audience", "cohorts_not_ready", "klaviyo_unavailable", "klaviyo_disconnected", "stale_preview", "apply_in_progress", "apply_interrupted"]
     },
     "generate_subject_lines": {
       "required": [],
